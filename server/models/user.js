@@ -15,6 +15,24 @@ const UserSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
   },
+  name: {
+    type: String,
+    required: false,
+    trim: true,
+    unique: false,
+  },
+  uniqueNumber: {
+    type: Number,
+    required: false,
+    trim: true,
+    unique: true,
+  },
+  birthDate: {
+    type: Date,
+    required: false,
+    trim: true,
+    unique: false,
+  },
 });
 
 UserSchema.plugin(uniqueValidator);

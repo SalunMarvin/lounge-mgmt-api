@@ -134,6 +134,33 @@ router.get('/me', authenticate, async (req, res) => {
   }
 });
 
+router.put('/update', authenticate, async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOneAndUpdate(
+      { email: email },
+      { $set: { name: "Naomi" } },
+      { new: true }
+    );
+
+    res.json({
+      title: 'Authentication successful',
+      detail: 'Successfully authenticated user',
+      user,
+    });
+  } catch (err) {
+    res.status(401).json({
+      errors: [
+        {
+          title: 'Unauthorized',
+          detail: 'Not authorized to access this route',
+          errorMessage: err.message,
+        },
+      ],
+    });
+  }
+});
+
 router.delete('/me', authenticate, csrfCheck, async (req, res) => {
   try {
     const { userId } = req.session;
