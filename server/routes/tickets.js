@@ -54,7 +54,7 @@ router.post('/product', authenticate, async (req, res) => {
         }
 
         ticket.products.push(product);
-        const persistedTicket = await ticket.save();
+        const persistedTicket = await ticket.save().populate('products');
 
         res
             .status(201)
