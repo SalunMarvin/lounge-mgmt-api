@@ -46,7 +46,7 @@ router.post('/product', authenticate, async (req, res) => {
         }
         
         if (isUniqueNumber) {
-            if (isUniqueCode.length > 4) {
+            if (isUniqueNumber.length > 4) {
                 product = await Product.findOne({ barCode: criteria });    
             } else {
                 product = await Product.findOne({ uniqueCode: criteria });
