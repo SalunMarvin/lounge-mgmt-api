@@ -9,7 +9,7 @@ const ClientSchema = new mongoose.Schema({
         unique: false,
     },
     uniqueNumber: {
-        type: Number,
+        type: String,
         required: false,
         trim: true,
         unique: true,
