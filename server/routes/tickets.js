@@ -92,7 +92,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:uniqueNumber', authenticate, async (req, res) => {
     try {
-        const ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber});
+        const ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber}).populate('products');
 
         res.json({
             title: 'OK',
