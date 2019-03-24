@@ -35,7 +35,7 @@ router.post('/product', authenticate, async (req, res) => {
         const {
             criteria,
             ticketId,
-            isUniqueCode,
+            isUniqueNumber,
         } = req.body;
         
         let ticket = await Ticket.findById({ _id: ticketId });
