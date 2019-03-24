@@ -196,7 +196,7 @@ router.delete('/product', authenticate, async (req, res) => {
 
 router.get('/', authenticate, async (req, res) => {
     try {
-        const tickets = await Ticket.find({}).populate('products').populate('client');
+        const tickets = await Ticket.find({}).sort('uniqueNumber').populate('products').populate('client');
 
         res.json({
             title: 'OK',
