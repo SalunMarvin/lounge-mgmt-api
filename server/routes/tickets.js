@@ -1,6 +1,7 @@
 const express = require('express');
 const Ticket = require('../models/ticket');
 const Product = require('../models/product');
+const Client = require('../models/client');
 const {
     authenticate
 } = require('../middleware/authenticate');
@@ -101,6 +102,39 @@ router.post('/product', authenticate, async (req, res) => {
     }
 });
 
+router.post('/client', authenticate, async (req, res) => {
+    try {
+        const {
+            criteria,
+            ticketId,
+        } = req.body;
+        
+        let ticket = await Ticket.findById({ _id: ticketId });
+        let client = await Client.findOne({ _id: criteria });
+
+        ticket.client = client;
+        ticket.name = client.name;
+         
+        let persistedTicket = await ticket.save();
+        persistedTicket = await Ticket.findOne({ _id: persistedTicket._id }).populate('client')
+
+        res
+            .status(201)
+            .json({
+                title: 'OK',
+                detail: 'Cliente adicionado com sucesso',
+            });
+    } catch (err) {
+        res.status(400).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Não foi possível adicionar um novo cliente',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.delete('/product', authenticate, async (req, res) => {
     try {
         const {
@@ -162,7 +196,7 @@ router.delete('/product', authenticate, async (req, res) => {
 
 router.get('/', authenticate, async (req, res) => {
     try {
-        const tickets = await Ticket.find({});
+        const tickets = await Ticket.find({}).populate('products').populate('client');
 
         res.json({
             title: 'OK',
@@ -182,7 +216,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:uniqueNumber', authenticate, async (req, res) => {
     try {
-        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products');
+        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products').populate('client');
         
         let products = []
         ticket.products.map(product => {

@@ -32,7 +32,11 @@ const TicketSchema = new mongoose.Schema({
     products: [{
         type: Schema.Types.ObjectId,
         ref: 'Product'
-    }]
+    }],
+    client: {
+        type: Schema.Types.ObjectId,
+        ref: 'Client'
+    }
 });
 
 TicketSchema.plugin(uniqueValidator);
