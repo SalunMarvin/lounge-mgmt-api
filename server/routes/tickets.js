@@ -54,7 +54,8 @@ router.post('/product', authenticate, async (req, res) => {
         }
 
         ticket.products.push(product);
-        const persistedTicket = await ticket.save().populate('products');
+        let persistedTicket = await ticket.save();
+        persistedTicket = await Ticket.findOne({ _id: persistedTicket._id }).populate('products')
 
         res
             .status(201)
