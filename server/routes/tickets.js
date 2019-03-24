@@ -42,11 +42,15 @@ router.post('/product', authenticate, async (req, res) => {
         let product = null;
 
         if (!isUniqueCode) {
-            product = await Product.findById({ _id: criteria });
+            product = await Product.findOneBy({ _id: criteria });
         }
         
         if (isUniqueCode) {
-            product = await Product.findOneBy({ uniqueCode: criteria });
+            if (isUniqueCode.length > 4) {
+                product = await Product.findOneBy({ barCode: criteria });    
+            } else {
+                product = await Product.findOneBy({ uniqueCode: criteria });
+            }
         }
 
         ticket.products.push(product);
