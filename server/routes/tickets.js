@@ -90,5 +90,25 @@ router.get('/', authenticate, async (req, res) => {
     }
 });
 
+router.get('/:uniqueNumber', authenticate, async (req, res) => {
+    try {
+        const ticket = await Ticket.findBy({ uniqueNumber: req.params.uniqueNumber});
+
+        res.json({
+            title: 'OK',
+            detail: 'Aqui está sua comanda!',
+            ticket,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Não foi possível listar as comandas',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 
 module.exports = router;
