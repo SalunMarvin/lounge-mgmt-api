@@ -53,9 +53,35 @@ router.post('/product', authenticate, async (req, res) => {
             }
         }
 
+        ticket.totalPrice = ticket.totalPrice + product.price;
         ticket.products.push(product);
         let persistedTicket = await ticket.save();
         persistedTicket = await Ticket.findOne({ _id: persistedTicket._id }).populate('products')
+
+        let products = []
+        persistedTicket.products.map(product => {
+            if (!products.some(item => item._id === product._id)) {
+                let newProduct = product;
+                product.quantity = 1;
+                products.push(newProduct)
+            } else {
+                let arrayProduct = products.find(criteria => criteria._id === product._id)
+                let newProduct = {
+                    _id: arrayProduct._id,
+                    name: arrayProduct.name,
+                    barCode: arrayProduct.barCode,
+                    quantity: arrayProduct.quantity + 1,
+                    price: arrayProduct.price + arrayProduct.price,
+                    uniqueCode: arrayProduct.uniqueCode,
+                }
+
+                let newArray = [arrayProduct];
+                products = products.filter(item => !newArray.includes(item))
+
+                products.push(newProduct);
+            }
+        })
+        persistedTicket.products = products
 
         res
             .status(201)
@@ -97,7 +123,32 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:uniqueNumber', authenticate, async (req, res) => {
     try {
-        const ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber}).populate('products');
+        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products');
+        
+        let products = []
+        ticket.products.map(product => {
+            if (!products.some(item => item._id === product._id)) {
+                let newProduct = product;
+                product.quantity = 1;
+                products.push(newProduct)
+            } else {
+                let arrayProduct = products.find(criteria => criteria._id === product._id)
+                let newProduct = {
+                    _id: arrayProduct._id,
+                    name: arrayProduct.name,
+                    barCode: arrayProduct.barCode,
+                    quantity: arrayProduct.quantity + 1,
+                    price: arrayProduct.price + arrayProduct.price,
+                    uniqueCode: arrayProduct.uniqueCode,
+                }
+
+                let newArray = [arrayProduct];
+                products = products.filter(item => !newArray.includes(item))
+
+                products.push(newProduct);
+            }
+        })
+        ticket.products = products
 
         res.json({
             title: 'OK',
