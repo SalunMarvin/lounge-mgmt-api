@@ -33,15 +33,23 @@ router.post('/', authenticate, async (req, res) => {
 router.post('/product', authenticate, async (req, res) => {
     try {
         const {
-            productId,
+            criteria,
             ticketId,
+            isUniqueCode,
         } = req.body;
         
         let ticket = await Ticket.findById({ _id: ticketId });
-        const product = await Product.findById({ _id: productId });
+        let product = null;
+
+        if (!isUniqueCode) {
+            product = await Product.findById({ _id: criteria });
+        }
+        
+        if (isUniqueCode) {
+            product = await Product.findOneBy({ uniqueCode: criteria });
+        }
 
         ticket.products.push(product);
-
         const persistedTicket = await ticket.save();
 
         res

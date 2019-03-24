@@ -65,5 +65,26 @@ router.get('/', authenticate, async (req, res) => {
     }
 });
 
+router.post('/search', authenticate, async (req, res) => {
+    try {
+        const { name } = req.body;
+        const products = await Product.find({ name: { "$regex": name, "$options": "i" } });
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got all products',
+            products,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 
 module.exports = router;
