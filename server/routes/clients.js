@@ -57,7 +57,7 @@ router.post('/search', authenticate, async (req, res) => {
 
         res.json({
             title: 'Successful operation',
-            detail: 'Successfully got all products',
+            detail: 'Successfully got all clients',
             clients,
         });
     } catch (err) {
