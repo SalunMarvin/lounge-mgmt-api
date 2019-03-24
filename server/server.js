@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 
 const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
+const productsRoute = require('./routes/products');
+const ticketsRoute = require('./routes/tickets');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(getSecret('dbUri')).then(
@@ -28,6 +30,8 @@ app.use(function(req, res, next) {
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/api/users', usersRoute);
+app.use('/api/products', productsRoute);
+app.use('/api/tickets', ticketsRoute);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
