@@ -41,11 +41,11 @@ router.post('/product', authenticate, async (req, res) => {
         let ticket = await Ticket.findById({ _id: ticketId });
         let product = null;
 
-        if (!isUniqueCode) {
+        if (!isUniqueNumber) {
             product = await Product.findOne({ _id: criteria });
         }
         
-        if (isUniqueCode) {
+        if (isUniqueNumber) {
             if (isUniqueCode.length > 4) {
                 product = await Product.findOne({ barCode: criteria });    
             } else {
