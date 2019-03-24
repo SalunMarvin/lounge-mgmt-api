@@ -23,7 +23,7 @@ const TicketSchema = new mongoose.Schema({
         default: Date.now
     },
     totalPrice: {
-        type: Schema.Types.Decimal128,
+        type: Number,
         required: false,
         trim: true,
         unique: false,
