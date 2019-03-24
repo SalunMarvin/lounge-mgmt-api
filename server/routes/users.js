@@ -85,10 +85,6 @@ router.post('/login', async (req, res) => {
     }
 
     const session = await initSession(userId);
-    res.set({
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Headers':'Accept,Content-Type,X-Requested-With,x-api-key'
-    })
 
     res
       .cookie('token', session.token, {
