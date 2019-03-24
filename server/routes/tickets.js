@@ -92,7 +92,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:uniqueNumber', authenticate, async (req, res) => {
     try {
-        const ticket = await Ticket.findBy({ uniqueNumber: req.params.uniqueNumber});
+        const ticket = await Ticket.find({ uniqueNumber: req.params.uniqueNumber});
 
         res.json({
             title: 'OK',
