@@ -86,6 +86,10 @@ router.post('/login', async (req, res) => {
 
     const session = await initSession(userId);
 
+    res.append('Access-Control-Allow-Origin', ['*']);
+    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.append('Access-Control-Allow-Headers', 'Content-Type');
+
     res
       .cookie('token', session.token, {
         httpOnly: true,
