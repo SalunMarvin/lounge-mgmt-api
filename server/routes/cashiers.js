@@ -27,6 +27,26 @@ router.get('/', authenticate, async (req, res) => {
     }
 });
 
+router.get('/:id', authenticate, async (req, res) => {
+    try {
+        const cashier = await Cashier.findById(req.params.id);
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got cashier',
+            cashier,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.post('/', authenticate, async (req, res) => {
     try {
         const cashier = new Cashier(req.body);
