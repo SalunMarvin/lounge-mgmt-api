@@ -164,7 +164,7 @@ router.delete('/product', authenticate, async (req, res) => {
                     name: arrayProduct.name,
                     barCode: arrayProduct.barCode,
                     quantity: arrayProduct.quantity + 1,
-                    price: arrayProduct.price + arrayProduct.price,
+                    price: arrayProduct.price + product.price,
                     uniqueCode: arrayProduct.uniqueCode,
                 }
 
@@ -174,6 +174,7 @@ router.delete('/product', authenticate, async (req, res) => {
                 products.push(newProduct);
             }
         })
+        products.sort((a, b) => b.uniqueCode - a.uniqueCode)
         persistedTicket.products = products
 
         res
@@ -241,6 +242,7 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
                 products.push(newProduct);
             }
         })
+        products.sort((a, b) => b.uniqueCode - a.uniqueCode)
         ticket.products = products
 
         res.json({
