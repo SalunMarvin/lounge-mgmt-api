@@ -82,6 +82,7 @@ router.post('/product', authenticate, async (req, res) => {
                 products.push(newProduct);
             }
         })
+        products.sort((a, b) => b.uniqueCode - a.uniqueCode)
         persistedTicket.products = products
 
         res
