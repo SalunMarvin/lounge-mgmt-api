@@ -82,7 +82,7 @@ router.post('/product', authenticate, async (req, res) => {
                 products.push(newProduct);
             }
         })
-        products.sort((a, b) => b.uniqueCode - a.uniqueCode)
+        products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
         res
@@ -175,7 +175,7 @@ router.delete('/product', authenticate, async (req, res) => {
                 products.push(newProduct);
             }
         })
-        products.sort((a, b) => b.uniqueCode - a.uniqueCode)
+        products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
         res
@@ -243,7 +243,7 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
                 products.push(newProduct);
             }
         })
-        products.sort((a, b) => b.uniqueCode - a.uniqueCode)
+        products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         ticket.products = products
 
         res.json({
