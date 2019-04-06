@@ -85,13 +85,13 @@ router.get('/:id', authenticate, async (req, res) => {
     }
 });
 
-router.delete('/', authenticate, async (req, res) => {
+router.delete('/:id', authenticate, async (req, res) => {
     try {
-        const products = await Product.find({});
+        const products = await Product.findByIdAndDelete({ _id: req.params.id});
 
         res.json({
             title: 'Successful operation',
-            detail: 'Successfully got all products',
+            detail: 'Successfully delete product',
             products,
         });
     } catch (err) {
