@@ -45,6 +45,44 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
+router.put('/:id', authenticate, async (req, res) => {
+    try {
+        const {
+            name,
+            barCode,
+            quantity,
+            price,
+            uniqueCode,
+        } = req.body;
+
+        const product = {
+            name: name,
+            barCode: barCode,
+            quantity: quantity,
+            price: price,
+            uniqueCode: uniqueCode,
+        };
+
+        let persistedProduct = await Product.findByIdAndUpdate(req.params.id, product);
+
+        res
+            .status(201)
+            .json({
+                title: 'Product Registration Successful',
+                detail: 'Successfully registered new product',
+                persistedProduct
+            });
+    } catch (err) {
+        res.status(400).json({
+            errors: [{
+                title: 'Product Registration Error',
+                detail: 'Something went wrong during product registration process.',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.get('/', authenticate, async (req, res) => {
     try {
         const products = await Product.find({});
