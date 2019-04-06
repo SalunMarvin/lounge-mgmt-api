@@ -13,6 +13,12 @@ const CashierSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Product'
     }],
+    price: {
+        type: Number,
+        required: false,
+        trim: true,
+        unique: false,
+    },
     openDate: {
         type: Date,
         required: true,

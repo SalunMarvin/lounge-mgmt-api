@@ -2,10 +2,77 @@ const express = require('express');
 const Ticket = require('../models/ticket');
 const Product = require('../models/product');
 const Client = require('../models/client');
+const Cashier = require('../models/cashier');
 const {
     authenticate
 } = require('../middleware/authenticate');
 const router = express.Router();
+
+router.get('/', authenticate, async (req, res) => {
+    try {
+        const tickets = await Ticket.find({}).sort({ 'uniqueNumber': 1 }).populate('products').populate('client');
+
+        res.json({
+            title: 'OK',
+            detail: 'Aqui estão suas comandas!',
+            tickets,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Não foi possível listar as comandas',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
+router.get('/:uniqueNumber', authenticate, async (req, res) => {
+    try {
+        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products').populate('client');
+        
+        let products = []
+        ticket.products.map(product => {
+            if (!products.some(item => item._id === product._id)) {
+                let newProduct = product;
+                product.quantity = 1;
+                products.push(newProduct)
+            } else {
+                let arrayProduct = products.find(criteria => criteria._id === product._id)
+                let newProduct = {
+                    _id: arrayProduct._id,
+                    name: arrayProduct.name,
+                    barCode: arrayProduct.barCode,
+                    quantity: arrayProduct.quantity + 1,
+                    price: arrayProduct.price + product.price,
+                    uniqueCode: arrayProduct.uniqueCode,
+                }
+
+                let newArray = [arrayProduct];
+                products = products.filter(item => !newArray.includes(item))
+
+                products.push(newProduct);
+            }
+        })
+        products.sort((a, b) => a.uniqueCode - b.uniqueCode)
+        ticket.products = products
+
+        res.json({
+            title: 'OK',
+            detail: 'Aqui está sua comanda!',
+            ticket,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Não foi possível listar as comandas',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
 
 router.post('/', authenticate, async (req, res) => {
     try {
@@ -147,7 +214,7 @@ router.delete('/product', authenticate, async (req, res) => {
         let product = await Product.findOne({ _id: productId });
 
         ticket.totalPrice = ticket.totalPrice - product.price;
-        let index = ticket.products.findIndex(criteria => criteria = product._id)
+        let index = ticket.products.findIndex(criteria => criteria === product._id)
         ticket.products.splice(index, 1)
         let persistedTicket = await ticket.save();
         persistedTicket = await Ticket.findOne({ _id: persistedTicket._id }).populate('products')
@@ -196,71 +263,58 @@ router.delete('/product', authenticate, async (req, res) => {
     }
 });
 
-router.get('/', authenticate, async (req, res) => {
+router.post('/pay/:id', authenticate, async (req, res) => {
     try {
-        const tickets = await Ticket.find({}).sort({ 'uniqueNumber': 1 }).populate('products').populate('client');
+        const ticket = await Ticket.findById(req.params.id);
+        ticket.totalPrice -= body.req.price;
+        const persistedTicket = await ticket.save();
 
-        res.json({
-            title: 'OK',
-            detail: 'Aqui estão suas comandas!',
-            tickets,
-        });
+        res
+            .status(201)
+            .json({
+                title: 'Sucesso',
+                detail: 'Valor pago com sucesso',
+                persistedTicket
+            });
     } catch (err) {
-        res.status(401).json({
+        res.status(400).json({
             errors: [{
                 title: 'Erro',
-                detail: 'Não foi possível listar as comandas',
+                detail: 'Não foi possível adicionar uma nova mesa ou cliente.',
                 errorMessage: err.message,
             }, ],
         });
     }
 });
 
-router.get('/:uniqueNumber', authenticate, async (req, res) => {
+router.post('/close/:id', authenticate, async (req, res) => {
     try {
-        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products').populate('client');
-        
-        let products = []
-        ticket.products.map(product => {
-            if (!products.some(item => item._id === product._id)) {
-                let newProduct = product;
-                product.quantity = 1;
-                products.push(newProduct)
-            } else {
-                let arrayProduct = products.find(criteria => criteria._id === product._id)
-                let newProduct = {
-                    _id: arrayProduct._id,
-                    name: arrayProduct.name,
-                    barCode: arrayProduct.barCode,
-                    quantity: arrayProduct.quantity + 1,
-                    price: arrayProduct.price + product.price,
-                    uniqueCode: arrayProduct.uniqueCode,
-                }
+        const ticket = await Ticket.findById(req.params.id);
+        const cashier = await Cashier.findById(req.body.cashierId);
 
-                let newArray = [arrayProduct];
-                products = products.filter(item => !newArray.includes(item))
-
-                products.push(newProduct);
-            }
-        })
-        products.sort((a, b) => a.uniqueCode - b.uniqueCode)
-        ticket.products = products
-
-        res.json({
-            title: 'OK',
-            detail: 'Aqui está sua comanda!',
-            ticket,
+        ticket.products.map(async (productId) => {
+            let product = await Product.findById(productId);
+            cashier.push(product._id);
+            cashier.price += product.price;
         });
+
+        await ticket.remove();
+
+        res
+            .status(201)
+            .json({
+                title: 'Sucesso',
+                detail: 'Comanda fechada com sucesso',
+            });
     } catch (err) {
-        res.status(401).json({
+        res.status(400).json({
             errors: [{
                 title: 'Erro',
-                detail: 'Não foi possível listar as comandas',
+                detail: 'Não foi possível adicionar uma nova mesa ou cliente.',
                 errorMessage: err.message,
             }, ],
         });
     }
 });
-
 
 module.exports = router;

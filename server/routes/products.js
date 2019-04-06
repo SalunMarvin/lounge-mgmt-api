@@ -1,6 +1,8 @@
 const express = require('express');
 
 const Product = require('../models/product');
+const Ticket = require('../models/ticket');
+const Cashier = require('../models/cashier');
 const {
     authenticate
 } = require('../middleware/authenticate');
@@ -141,6 +143,72 @@ router.post('/search', authenticate, async (req, res) => {
             title: 'Successful operation',
             detail: 'Successfully got all products',
             products,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
+router.post('/pay', authenticate, async (req, res) => {
+    try {
+        const { ticketId, cashierId, productsIds } = req.body;
+        const ticket = await Ticket.findById(ticketId);
+        const cashier = await Cashier.findById(cashierId);
+
+        productsIds.map(async (productId) => {
+            let product = await Product.findById(productId);
+            let index = ticket.products.indexOf(product._id)
+            ticket.products.splice(index, 1);
+            ticket.totalPrice -= product.price;
+            product.quantity--;
+            product.save();
+            cashier.products.push(product._id);
+            cashier.price += product.price;
+        });
+
+        cashier.save();
+        ticket.save();
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got all products',
+            ticket,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
+router.post('/remove', authenticate, async (req, res) => {
+    try {
+        const { ticketId , productsIds } = req.body;
+        const ticket = await Ticket.findById(ticketId);
+
+        productsIds.map(async (productId) => {
+            let product = await Product.findById(productId);
+            let index = ticket.products.indexOf(product._id)
+            ticket.products.splice(index, 1);
+            product.save();
+        });
+
+        ticket.save();
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got all products',
+            ticket,
         });
     } catch (err) {
         res.status(401).json({
