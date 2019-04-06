@@ -74,6 +74,28 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
     }
 });
 
+router.get('/details/:uniqueNumber', authenticate, async (req, res) => {
+    try {
+        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products').populate('client');
+        
+        ticket.products.sort((a, b) => a.uniqueCode - b.uniqueCode)
+
+        res.json({
+            title: 'OK',
+            detail: 'Aqui está sua comanda!',
+            ticket,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Não foi possível listar as comandas',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.post('/', authenticate, async (req, res) => {
     try {
         const ticket = new Ticket(req.body);
