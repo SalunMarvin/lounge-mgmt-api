@@ -29,7 +29,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:id', authenticate, async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id).populate('terminal');
+        const product = await Product.findById(req.params.id);
 
         res.json({
             title: 'Successful operation',
