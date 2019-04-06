@@ -33,6 +33,10 @@ const ProductSchema = new mongoose.Schema({
         trim: true,
         unique: false,
     },
+    terminal: {
+        type: Schema.Types.ObjectId,
+        ref: 'Terminal'
+    }
 });
 
 ProductSchema.plugin(uniqueValidator);

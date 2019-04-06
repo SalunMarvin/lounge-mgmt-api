@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcryptjs');
+const Schema = mongoose.Schema
 
 const UserSchema = new mongoose.Schema({
     email: {
@@ -32,6 +33,10 @@ const UserSchema = new mongoose.Schema({
         required: false,
         trim: true,
         unique: false,
+    },
+    role: {
+        type: Schema.Types.ObjectId,
+        ref: 'Role'
     },
 });
 

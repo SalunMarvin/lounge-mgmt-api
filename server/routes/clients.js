@@ -7,6 +7,26 @@ const {
 
 const router = express.Router();
 
+router.get('/', authenticate, async (req, res) => {
+    try {
+        const clients = await Client.find({});
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got all clients',
+            clients,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.post('/', authenticate, async (req, res) => {
     try {
         const client = new Client(req.body);
@@ -24,26 +44,6 @@ router.post('/', authenticate, async (req, res) => {
             errors: [{
                 title: 'Client Registration Error',
                 detail: 'Something went wrong during client registration process.',
-                errorMessage: err.message,
-            }, ],
-        });
-    }
-});
-
-router.get('/', authenticate, async (req, res) => {
-    try {
-        const clients = await Client.find({});
-
-        res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all clients',
-            clients,
-        });
-    } catch (err) {
-        res.status(401).json({
-            errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
                 errorMessage: err.message,
             }, ],
         });
