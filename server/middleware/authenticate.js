@@ -13,10 +13,6 @@ const authenticate = async (req, res, next) => {
     //   throw new Error('Your session has expired. You need to log in.');
     // }
     // req.session = session;
-
-    res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
     next();
   } catch (err) {
     res.status(401).json({
