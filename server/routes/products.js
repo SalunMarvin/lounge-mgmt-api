@@ -7,23 +7,49 @@ const {
 
 const router = express.Router();
 
+router.get('/', authenticate, async (req, res) => {
+    try {
+        const products = await Product.find({});
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got all products',
+            products,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
+router.get('/:id', authenticate, async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id).populate('terminal');
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got product details',
+            product,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.post('/', authenticate, async (req, res) => {
     try {
-        const {
-            name,
-            barCode,
-            quantity,
-            price,
-            uniqueCode,
-        } = req.body;
-
-        const product = new Product({
-            name,
-            barCode,
-            quantity,
-            price,
-            uniqueCode,
-        });
+        const product = new Product(req.body);
 
         const persistedProduct = await product.save();
 
@@ -53,6 +79,7 @@ router.put('/:id', authenticate, async (req, res) => {
             quantity,
             price,
             uniqueCode,
+            terminal,
         } = req.body;
 
         const product = {
@@ -61,6 +88,7 @@ router.put('/:id', authenticate, async (req, res) => {
             quantity: quantity,
             price: price,
             uniqueCode: uniqueCode,
+            terminal: terminal,
         };
 
         let persistedProduct = await Product.findByIdAndUpdate(req.params.id, product);
@@ -83,45 +111,6 @@ router.put('/:id', authenticate, async (req, res) => {
     }
 });
 
-router.get('/', authenticate, async (req, res) => {
-    try {
-        const products = await Product.find({});
-
-        res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all products',
-            products,
-        });
-    } catch (err) {
-        res.status(401).json({
-            errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
-                errorMessage: err.message,
-            }, ],
-        });
-    }
-});
-
-router.get('/:id', authenticate, async (req, res) => {
-    try {
-        const product = await Product.findById(req.params.id);
-
-        res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got product details',
-            product,
-        });
-    } catch (err) {
-        res.status(401).json({
-            errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
-                errorMessage: err.message,
-            }, ],
-        });
-    }
-});
 
 router.delete('/:id', authenticate, async (req, res) => {
     try {
