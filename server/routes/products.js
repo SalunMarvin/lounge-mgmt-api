@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', authenticate, async (req, res) => {
     try {
-        const products = await Product.find({});
+        const products = await Product.find({}).populate('terminal');
 
         res.json({
             title: 'Successful operation',
