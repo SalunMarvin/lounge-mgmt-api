@@ -29,6 +29,13 @@ const TicketSchema = new mongoose.Schema({
         unique: false,
         default: 0,
     },
+    paid: {
+        type: Number,
+        required: false,
+        trim: true,
+        unique: false,
+        default: 0,
+    },
     products: [{
         type: Schema.Types.ObjectId,
         ref: 'Product'

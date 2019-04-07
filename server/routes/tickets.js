@@ -289,6 +289,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
     try {
         const ticket = await Ticket.findById(req.params.id);
         ticket.totalPrice -= body.req.price;
+        ticket.paid += body.req.price;
         const persistedTicket = await ticket.save();
 
         res
