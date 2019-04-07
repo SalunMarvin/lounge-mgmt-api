@@ -161,19 +161,20 @@ router.post('/pay', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(ticketId);
         const cashier = await Cashier.findById(cashierId);
 
-        productsIds.map(async (productId) => {
-            let product = await Product.findById(productId);
-            let index = ticket.products.indexOf(product._id)
-            ticket.products.splice(index, 1);
-            ticket.totalPrice -= product.price;
-            product.quantity--;
-            await product.save();
-            cashier.products.push(product._id);
-            cashier.price += product.price;
+        productsIds.map((productId) => {
+            Product.findById(productId).then(function(product) {
+                let index = ticket.products.indexOf(product._id)
+                ticket.products.splice(index, 1);
+                ticket.totalPrice -= product.price;
+                product.quantity--;
+                cashier.products.push(product._id);
+                cashier.price += product.price;
+                product.save();
+            });
+        }).then(function () {
+            cashier.save();
+            ticket.save();
         });
-
-        await cashier.save();
-        await ticket.save();
 
         res.json({
             title: 'Successful operation',
