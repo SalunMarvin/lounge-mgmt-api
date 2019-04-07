@@ -167,7 +167,7 @@ router.post('/pay', authenticate, async (req, res) => {
             ticket.products.splice(index, 1);
             ticket.totalPrice -= product.price;
             product.quantity--;
-            product.save();
+            await product.save();
             cashier.products.push(product._id);
             cashier.price += product.price;
         });
