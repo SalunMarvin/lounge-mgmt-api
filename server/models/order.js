@@ -21,7 +21,11 @@ const OrderSchema = new mongoose.Schema({
         trim: true,
         unique: false,
         default: Date.now
-    }
+    },
+    terminal: {
+        type: Schema.Types.ObjectId,
+        ref: 'Terminal'
+    },
 });
 
 OrderSchema.plugin(uniqueValidator);

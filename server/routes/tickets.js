@@ -175,7 +175,7 @@ router.post('/product', authenticate, async (req, res) => {
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
-        const order = new Order({ name: product.name, ready: false })
+        const order = new Order({ name: product.name, ready: false, order: product.terminal })
         const persistedOrder = await order.save();
 
         var io = req.app.get('socketio');
