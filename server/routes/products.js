@@ -174,6 +174,7 @@ router.post('/pay', authenticate, async (req, res) => {
 
         await cashier.save();
         await ticket.save();
+        
 
         res.json({
             title: 'Successful operation',
