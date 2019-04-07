@@ -45,6 +45,13 @@ app.use(function (req, res, next) {
   next();
 });
 
+const io = require('socket.io')(server);
+io.on('connection', function(socket){
+  socket.emit('tickets', { hello: 'world' });
+});
+
+app.set('socketio', io);
+
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/api/users', usersRoute);
@@ -59,11 +66,5 @@ app.use('/api/cashiers', cashiersRoute);
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-const io = require('socket.io')(server);
-io.on('connection', function(socket){
-  socket.emit('tickets', { hello: 'world' });
-});
-
 
 module.exports = { app };
