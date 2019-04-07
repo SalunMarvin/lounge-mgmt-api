@@ -23,7 +23,6 @@ mongoose.connect(getSecret('dbUri')).then(
 
 const app = express();
 const server = require('http').Server(app);
-const io = require('socket.io')(server);
 const port = process.env.PORT || 3000;
 
 app.use(function (req, res, next) {
@@ -46,17 +45,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-io.on('connection', function(socket){
-  socket.emit('news', { hello: 'world' });
-  setInterval(
-    () => socket.emit('news', { hello: 'world' }),
-    1000
-  );
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
-
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use('/api/users', usersRoute);
@@ -70,6 +58,14 @@ app.use('/api/cashiers', cashiersRoute);
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
+});
+
+const io = require('socket.io')(server);
+io.on('connection', function(socket){
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
 });
 
 module.exports = { app };
