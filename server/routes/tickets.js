@@ -175,7 +175,9 @@ router.post('/product', authenticate, async (req, res) => {
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
-        io.emit('tickets', { hello: 'world' });
+        io.on('connection', function(socket){
+            socket.emit('tickets', { hello: 'world' });
+        });
 
         res
             .status(201)
