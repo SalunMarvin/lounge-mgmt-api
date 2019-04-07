@@ -161,8 +161,8 @@ router.post('/pay', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(ticketId);
         const cashier = await Cashier.findById(cashierId);
 
-        productsIds.map((productId) => {
-            Product.findById(productId).then(function(product) {
+        let promises = productsIds.map((productId) => {
+            Product.findById(productId).then(function (product) {
                 let index = ticket.products.indexOf(product._id)
                 ticket.products.splice(index, 1);
                 ticket.totalPrice -= product.price;
@@ -171,16 +171,19 @@ router.post('/pay', authenticate, async (req, res) => {
                 cashier.price += product.price;
                 product.save();
             });
-        }).then(function () {
-            cashier.save();
-            ticket.save();
         });
 
-        res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all products',
-            ticket,
-        });
+        Promise.all(promises).then(function() {
+            cashier.save();
+            ticket.save();
+        
+            res.json({
+                title: 'Successful operation',
+                detail: 'Successfully got all products',
+                ticket,
+            });
+        })
+        
     } catch (err) {
         res.status(401).json({
             errors: [{
