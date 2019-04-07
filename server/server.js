@@ -47,7 +47,14 @@ app.use(function (req, res, next) {
 });
 
 io.on('connection', function(socket){
-  io.emit('broadcast', 'teste');
+  socket.emit('news', { hello: 'world' });
+  setInterval(
+    () => socket.emit('news', { hello: 'world' }),
+    1000
+  );
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
 });
 
 app.use(bodyParser.json());
