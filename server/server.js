@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const webSocket = require('ws');
+const io = require('socket.io')(server);
 
 const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
@@ -45,17 +45,8 @@ app.use(function (req, res, next) {
   next();
 });
 
-const wss = new webSocket.Server({ port: 8080 });
-
-wss.on('connection', ws => {
-  ws.on('message', message => {
-    console.log(`Received message => ${message}`);
-  })
-  setInterval(
-    () => ws.send(`${new Date()}`),
-    1000
-  );
-  ws.send('ho!');
+io.on('connection', function(socket){
+  io.emit('broadcast', 'teste');
 });
 
 app.use(bodyParser.json());
