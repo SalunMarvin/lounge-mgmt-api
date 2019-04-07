@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-const io = require('socket.io')(server);
 
 const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
@@ -23,6 +22,8 @@ mongoose.connect(getSecret('dbUri')).then(
 );
 
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const port = process.env.PORT || 3000;
 
 app.use(function (req, res, next) {
