@@ -61,7 +61,7 @@ app.use('/api/routes', routesRoute);
 app.use('/api/terminals', terminalsRoute);
 app.use('/api/cashiers', cashiersRoute);
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
