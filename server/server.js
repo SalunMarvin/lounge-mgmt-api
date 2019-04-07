@@ -25,8 +25,20 @@ mongoose.connect(getSecret('dbUri')).then(
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", '*');
+app.use(function (req, res, next) {
+  let allowedOrigins = [
+    'http://127.0.0.1:8020',
+    'http://localhost:8020',
+    'http://127.0.0.1:9000',
+    'http://localhost:9000',
+    'http://127.0.0.1:8080',
+    'http://localhost:8080',
+    'https://kanova.netlify.com'];
+  let origin = req.headers.origin;
+  if(allowedOrigins.indexOf(origin) > -1){
+       res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  // res.header("Access-Control-Allow-Origin", '*');
   res.header("Access-Control-Allow-Credentials", true);
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,HEAD,OPTIONS');
   res.header("Access-Control-Allow-Headers", 'Content-Type');
