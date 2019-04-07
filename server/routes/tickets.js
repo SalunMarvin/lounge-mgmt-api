@@ -175,7 +175,7 @@ router.post('/product', authenticate, async (req, res) => {
         persistedTicket.products = products
 
         var io = req.app.get('socketio');
-        io.emit(product.terminal, { name: product.name });
+        io.socket.emit(product.terminal, { name: product.name });
         
 
         res
