@@ -288,8 +288,8 @@ router.delete('/product', authenticate, async (req, res) => {
 router.post('/pay/:id', authenticate, async (req, res) => {
     try {
         const ticket = await Ticket.findById(req.params.id);
-        ticket.totalPrice -= body.req.price;
-        ticket.paid += body.req.price;
+        ticket.totalPrice -= req.body.price;
+        ticket.paid += req.body.price;
         const persistedTicket = await ticket.save();
 
         res
