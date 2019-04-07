@@ -321,10 +321,8 @@ router.post('/close/:id', authenticate, async (req, res) => {
             cashier.price += product.price;
         });
 
-        cashier.closeDate = Date.now();
-        await cashier.save();
-
-        await ticket.remove();
+        cashier.save();
+        ticket.remove();
 
         res
             .status(201)
