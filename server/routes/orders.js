@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.get('/', authenticate, async (req, res) => {
     try {
-        const orders = await Order.find({});
+        const orders = await Order.find({}).sort({'created': 1});
 
         res.json({
             title: 'Successful operation',

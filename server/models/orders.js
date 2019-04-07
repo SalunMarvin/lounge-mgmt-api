@@ -15,6 +15,13 @@ const OrderSchema = new mongoose.Schema({
         unique: false,
         default: false,
     },
+    created: {
+        type: Date,
+        required: false,
+        trim: true,
+        unique: false,
+        default: Date.now
+    }
 });
 
 OrderSchema.plugin(uniqueValidator);

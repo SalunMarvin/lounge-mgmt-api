@@ -3,6 +3,7 @@ const Ticket = require('../models/ticket');
 const Product = require('../models/product');
 const Client = require('../models/client');
 const Cashier = require('../models/cashier');
+const Order = require('../models/order');
 const {
     authenticate
 } = require('../middleware/authenticate');
@@ -174,8 +175,11 @@ router.post('/product', authenticate, async (req, res) => {
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
+        const order = new Order({ name: product.name, ready: false })
+        const persistedOrder = await order.save();
+
         var io = req.app.get('socketio');
-        io.emit(product.terminal, { name: product.name });
+        io.emit(product.terminal, persistedOrder);
 
         res
             .status(201)

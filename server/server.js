@@ -12,6 +12,7 @@ const rolesRoute = require('./routes/roles');
 const routesRoute = require('./routes/routes');
 const terminalsRoute = require('./routes/terminals');
 const cashiersRoute = require('./routes/cashiers');
+const ordersRoute = require('./routes/orders');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(getSecret('dbUri')).then(
@@ -62,6 +63,7 @@ app.use('/api/roles', rolesRoute);
 app.use('/api/routes', routesRoute);
 app.use('/api/terminals', terminalsRoute);
 app.use('/api/cashiers', cashiersRoute);
+app.use('/api/orders', ordersRoute);
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
