@@ -173,7 +173,7 @@ router.post('/pay', authenticate, async (req, res) => {
             });
         });
 
-        Promise.all(promises).then(function(){
+        Promise.all(promises).then(function () {
             cashier.save();
             const persistedTicket = ticket.save();
 
@@ -182,7 +182,7 @@ router.post('/pay', authenticate, async (req, res) => {
                 detail: 'Successfully got all products',
                 persistedTicket,
             });
-        })
+        });
     } catch (err) {
         res.status(401).json({
             errors: [{
@@ -199,19 +199,22 @@ router.post('/remove', authenticate, async (req, res) => {
         const { ticketId , productsIds } = req.body;
         const ticket = await Ticket.findById(ticketId);
 
-        productsIds.map(async (productId) => {
-            let product = await Product.findById(productId);
-            let index = ticket.products.indexOf(product._id)
-            ticket.products.splice(index, 1);
-            product.save();
+        let promises = productsIds.map((productId) => {
+            return Product.findById(productId).then(function (product) {
+                let index = ticket.products.indexOf(product._id)
+                ticket.products.splice(index, 1);
+                product.save();
+            });
         });
 
-        ticket.save();
+        Promise.all(promises).then(function () {
+            ticket.save();
 
-        res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all products',
-            ticket,
+            res.json({
+                title: 'Successful operation',
+                detail: 'Successfully got all products',
+                ticket,
+            });
         });
     } catch (err) {
         res.status(401).json({
