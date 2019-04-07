@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const webSocket = require('ws');
 
 const { getSecret } = require('./secrets');
 const usersRoute = require('./routes/users');
@@ -30,6 +31,19 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,HEAD,OPTIONS');
   res.header("Access-Control-Allow-Headers", 'Content-Type');
   next();
+});
+
+const wss = new webSocket.Server({ port: 8080 });
+
+wss.on('connection', ws => {
+  ws.on('message', message => {
+    console.log(`Received message => ${message}`);
+  })
+  setInterval(
+    () => ws.send(`${new Date()}`),
+    1000
+  );
+  ws.send('ho!');
 });
 
 app.use(bodyParser.json());
