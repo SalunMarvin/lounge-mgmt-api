@@ -62,19 +62,7 @@ server.listen(port, () => {
 
 const io = require('socket.io')(server);
 io.on('connection', function(socket){
-  socket.emit('news', { hello: 'world' });
-  setInterval(() => {
-    io.emit('news3', { hello: 'world' })
-  }, 1000
-  );
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+  socket.emit('tickets', { hello: 'world' });
 });
-
-setInterval(() => {
-  io.emit('news2', { hello: 'world' })
-}, 1000
-);
 
 module.exports = { app };

@@ -1,4 +1,5 @@
 const express = require('express');
+const io = require('socket.io');
 const Ticket = require('../models/ticket');
 const Product = require('../models/product');
 const Client = require('../models/client');
@@ -174,6 +175,8 @@ router.post('/product', authenticate, async (req, res) => {
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
+        io.emit('tickets', { hello: 'world' });
+
         res
             .status(201)
             .json({
@@ -266,6 +269,7 @@ router.delete('/product', authenticate, async (req, res) => {
         })
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
+        
 
         res
             .status(201)
