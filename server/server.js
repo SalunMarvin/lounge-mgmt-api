@@ -68,4 +68,9 @@ io.on('connection', function(socket){
   });
 });
 
+setInterval(
+  io.emit('news2', { hello: 'world' }),
+  1000
+);
+
 module.exports = { app };
