@@ -161,7 +161,7 @@ router.post('/pay', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(ticketId);
         const cashier = await Cashier.findById(cashierId);
 
-        productsIds.map((productId) => {
+        productsIds.map(async (productId) => {
             let product = await Product.findById(productId);
             let index = ticket.products.indexOf(product._id)
             ticket.products.splice(index, 1);
