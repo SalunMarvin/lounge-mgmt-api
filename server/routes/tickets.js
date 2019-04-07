@@ -176,7 +176,6 @@ router.post('/product', authenticate, async (req, res) => {
 
         var io = req.app.get('socketio');
         io.emit(product.terminal, { name: product.name });
-        
 
         res
             .status(201)
