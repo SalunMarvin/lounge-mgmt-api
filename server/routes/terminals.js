@@ -33,7 +33,7 @@ router.get('/:id', authenticate, async (req, res) => {
 
         res.json({
             title: 'OK',
-            detail: 'Terminal encontrado com sucesso',
+            detail: 'Terminal encontrado com sucesso.',
             terminal,
         });
     } catch (err) {
