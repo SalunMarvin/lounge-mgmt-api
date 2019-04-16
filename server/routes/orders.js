@@ -27,6 +27,26 @@ router.get('/', authenticate, async (req, res) => {
     }
 });
 
+router.get('/terminal/:id', authenticate, async (req, res) => {
+    try {
+        const orders = await Order.find({ terminal: req.params.id }).sort({'created': 1});
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got all orders',
+            orders,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.post('/', authenticate, async (req, res) => {
     try {
         const order = new Order(req.body);
