@@ -68,4 +68,30 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
+router.post('/ready/:id', authenticate, async (req, res) => {
+    try {
+        const order = Order.findById(req.params.id);
+        order.ready = true;
+
+        const persistedOrder = await order.save();
+
+        var io = req.app.get('socketio');
+        io.emit(persistedOrder._id, persistedOrder);
+
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully created order',
+            persistedOrder,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 module.exports = router;
