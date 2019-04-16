@@ -15,6 +15,10 @@ const TerminalSchema = new mongoose.Schema({
         trim: true,
         unique: true,
     },
+    orders: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Order'
+    }],
 });
 
 TerminalSchema.plugin(uniqueValidator);

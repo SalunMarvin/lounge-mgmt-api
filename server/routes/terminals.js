@@ -29,7 +29,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:id', authenticate, async (req, res) => {
     try {
-        const terminal = await Terminal.findById(req.params.id);
+        const terminal = await Terminal.findById(req.params.id).populate('orders');
 
         res.json({
             title: 'OK',

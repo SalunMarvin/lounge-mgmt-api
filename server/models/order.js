@@ -26,6 +26,12 @@ const OrderSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Terminal'
     },
+    client: {
+        type: Number,
+        required: true,
+        unique: false,
+        trim: true
+    },
 });
 
 OrderSchema.plugin(uniqueValidator);

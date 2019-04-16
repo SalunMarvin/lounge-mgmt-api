@@ -137,7 +137,7 @@ router.post('/product', authenticate, async (req, res) => {
         }
         
         if (isUniqueNumber) {
-            if (isUniqueNumber.length > 4) {
+            if (criteria.length > 4) {
                 product = await Product.findOne({ barCode: criteria });    
             } else {
                 product = await Product.findOne({ uniqueCode: criteria });
@@ -175,7 +175,7 @@ router.post('/product', authenticate, async (req, res) => {
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
-        const order = new Order({ name: product.name, ready: false, terminal: product.terminal })
+        const order = new Order({ name: product.name, ready: false, terminal: product.terminal, client: ticket.uniqueNumber })
         const persistedOrder = await order.save();
 
         var io = req.app.get('socketio');
