@@ -52,6 +52,23 @@ router.get('/:id', authenticate, async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
     try {
         const product = new Product(req.body);
+        const allProducts = await Product.find({}).select('uniqueCode -_id');
+        let uniqueCodes = [];
+        let allUniqueCodes = Array.from(Array(9999).keys());
+
+        allProducts.map(product => {
+            uniqueCodes.push(product.uniqueCode);
+        });
+
+        Array.prototype.diff = function (a) {
+            return this.filter(function (i) { return a.indexOf(i) < 0; });
+        };
+
+        let uniqueCodesToUse = allUniqueCodes.diff(uniqueCodes);
+        
+        if (!req.body.uniqueCode || req.body.uniqueCode === '' || req.body.uniqueCode === null) {
+            product.uniqueCode = uniqueCodesToUse[0];
+        }
 
         const persistedProduct = await product.save();
 
