@@ -29,7 +29,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/terminal/:id', authenticate, async (req, res) => {
     try {
-        const orders = await Order.find({ terminal: req.params.id }).sort({'created': 1});
+        const orders = await Order.find({ terminal: req.params.id, ready: false }).sort({'created': 1});
 
         res.json({
             title: 'Successful operation',
