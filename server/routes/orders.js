@@ -70,7 +70,7 @@ router.post('/', authenticate, async (req, res) => {
 
 router.post('/ready/:id', authenticate, async (req, res) => {
     try {
-        const order = Order.findById(req.params.id);
+        const order = await Order.findById(req.params.id);
         order.ready = true;
 
         const persistedOrder = await order.save();
