@@ -76,7 +76,7 @@ router.post('/ready/:id', authenticate, async (req, res) => {
         const persistedOrder = await order.save();
 
         var io = req.app.get('socketio');
-        io.emit(persistedOrder._id, persistedOrder);
+        io.emit('orderReady', persistedOrder);
 
         res.json({
             title: 'Successful operation',
