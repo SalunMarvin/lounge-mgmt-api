@@ -36,7 +36,11 @@ const ProductSchema = new mongoose.Schema({
     terminal: {
         type: Schema.Types.ObjectId,
         ref: 'Terminal'
-    }
+    },
+    cashiers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Cashier'
+    }],
 });
 
 ProductSchema.plugin(uniqueValidator);

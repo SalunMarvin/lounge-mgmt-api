@@ -286,7 +286,7 @@ router.delete('/product', authenticate, async (req, res) => {
         res.status(400).json({
             errors: [{
                 title: 'Erro',
-                detail: 'Não foi possível remover um novo produto',
+                detail: 'Não foi possível remover um produto',
                 errorMessage: err.message,
             }, ],
         });
@@ -311,7 +311,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
         res.status(400).json({
             errors: [{
                 title: 'Erro',
-                detail: 'Não foi possível adicionar uma nova mesa ou cliente.',
+                detail: 'Não foi possível pagar por este produto.',
                 errorMessage: err.message,
             }, ],
         });
