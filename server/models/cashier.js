@@ -18,6 +18,7 @@ const CashierSchema = new mongoose.Schema({
         required: false,
         trim: true,
         unique: false,
+        default: 0,
     },
     openDate: {
         type: Date,
