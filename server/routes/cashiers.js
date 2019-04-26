@@ -68,4 +68,27 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
+router.post('/close/:id', authenticate, async (req, res) => {
+    try {
+        const cashier = await Cashier.findById(req.params.id);
+        cashier.closeDate = Date.now();
+
+        const persistedCashier = await cashier.save();
+
+        res.json({
+            title: 'OK',
+            detail: 'Caixa fechado com sucesso',
+            persistedCashier,
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Erro',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 module.exports = router;
