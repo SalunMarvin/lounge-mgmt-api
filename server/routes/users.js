@@ -91,10 +91,10 @@ router.post('/login', async (req, res) => {
 
     res
       .cookie('token', session.token, {
-        httpOnly: false,
+        httpOnly: true,
         sameSite: false,
         maxAge: 1209600000,
-        secure: false,
+        secure: true,
       })
       .json({
         title: 'Login Successful',

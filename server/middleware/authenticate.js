@@ -3,8 +3,9 @@ const Session = require('../models/session');
 
 const authenticate = async (req, res, next) => {
   try {
+    // const { token } = req.cookies;
+    const { token } = req.headers;
     console.log(req.cookies);
-    const { token } = req.cookies;
     if (typeof token !== 'string') {
       throw new Error('Request cookie is invalid.');
     }
