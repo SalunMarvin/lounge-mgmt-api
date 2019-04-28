@@ -117,7 +117,7 @@ router.post('/login', async (req, res) => {
 router.get('/me', authenticate, async (req, res) => {
   try {
     const { userId } = req.session;
-    const user = await User.findById({ _id: userId }, { email: 1, _id: 0 });
+    const user = await User.findById({ _id: userId }, { email: 1, name: 1 });
 
     res.json({
       title: 'Authentication successful',
