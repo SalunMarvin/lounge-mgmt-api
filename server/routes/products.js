@@ -179,7 +179,7 @@ router.post('/pay', authenticate, async (req, res) => {
         const cashier = await Cashier.findById(cashierId);
 
         let promises = productsIds.map((productId) => {
-            return Product.findById(productId).then(function (product) {
+            Product.findById(productId).then(function (product) {
                 let index = ticket.products.indexOf(product._id)
                 ticket.products.splice(index, 1);
                 ticket.totalPrice -= product.price;

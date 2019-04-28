@@ -324,11 +324,13 @@ router.post('/close/:id', authenticate, async (req, res) => {
         const cashier = await Cashier.findById(req.body.cashierId);
 
         let promises = ticket.products.map((productId) => {
-            return Product.findById(productId).then(function (product) {
+            Product.findById(productId).then(function (product) {
+                //TODO: GET ONLY ONE INSTEAD OF ALL
                 let index = ticket.products.indexOf(product._id)
                 ticket.products.splice(index, 1);
                 ticket.totalPrice -= product.price;
                 product.quantity--;
+                //TODO: CHECK IF CASHIER ALREADY IN PRODUCT
                 product.cashiers.push(cashier._id);
                 product.save();
                 cashier.products.push(product._id);
