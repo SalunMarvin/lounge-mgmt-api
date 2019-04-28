@@ -13,6 +13,14 @@ const RoleSchema = new mongoose.Schema({
         type: Schema.Types.ObjectId,
         ref: 'Route'
     }],
+    menus: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Menu'
+    }],
+    users: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
 });
 
 RoleSchema.plugin(uniqueValidator);
