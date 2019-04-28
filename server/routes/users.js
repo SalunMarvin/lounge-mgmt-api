@@ -116,9 +116,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/me', authenticate, async (req, res) => {
   try {
-    console.log(req.session);
     const { userId } = req.session;
-    console.log(req.session);
     const user = await User.findById({ _id: userId }, { email: 1, _id: 0 });
 
     res.json({
