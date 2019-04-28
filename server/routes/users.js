@@ -198,7 +198,7 @@ router.delete('/me', authenticate, csrfCheck, async (req, res) => {
   }
 });
 
-router.put('/logout', authenticate, csrfCheck, async (req, res) => {
+router.put('/logout', authenticate, async (req, res) => {
   try {
     const { session } = req;
     await session.expireToken(session.token);

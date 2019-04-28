@@ -323,21 +323,30 @@ router.post('/close/:id', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(req.params.id);
         const cashier = await Cashier.findById(req.body.cashierId);
 
-        ticket.products.map(async (productId) => {
-            let product = await Product.findById(productId);
-            cashier.push(product._id);
-            cashier.price += product.price;
+        let promises = ticket.products.map((productId) => {
+            return Product.findById(productId).then(function (product) {
+                let index = ticket.products.indexOf(product._id)
+                ticket.products.splice(index, 1);
+                ticket.totalPrice -= product.price;
+                product.quantity--;
+                product.cashiers.push(cashier._id);
+                product.save();
+                cashier.products.push(product._id);
+                cashier.price += product.price;
+            });
         });
 
-        cashier.save();
-        ticket.remove();
+        Promise.all(promises).then(function () {
+            cashier.save();
+            ticket.remove();
 
-        res
+            res
             .status(201)
             .json({
                 title: 'Sucesso',
                 detail: 'Comanda fechada com sucesso',
             });
+        });
     } catch (err) {
         res.status(400).json({
             errors: [{
