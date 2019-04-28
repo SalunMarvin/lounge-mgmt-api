@@ -11,7 +11,9 @@ const router = express.Router();
 
 router.get('/', authenticate, async (req, res) => {
     try {
-        const tickets = await Ticket.find({}).sort({ 'uniqueNumber': 1 }).populate('products').populate('client');
+        const tickets = await Ticket.find({}).sort({
+            'uniqueNumber': 1
+        }).populate('products').populate('client');
 
         res.json({
             title: 'OK',
@@ -31,8 +33,10 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:uniqueNumber', authenticate, async (req, res) => {
     try {
-        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products').populate('client');
-        
+        let ticket = await Ticket.findOne({
+            uniqueNumber: req.params.uniqueNumber
+        }).populate('products').populate('client');
+
         let products = []
         ticket.products.map(product => {
             if (!products.some(item => item._id === product._id)) {
@@ -77,8 +81,10 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
 
 router.get('/details/:uniqueNumber', authenticate, async (req, res) => {
     try {
-        let ticket = await Ticket.findOne({ uniqueNumber: req.params.uniqueNumber }).populate('products').populate('client');
-        
+        let ticket = await Ticket.findOne({
+            uniqueNumber: req.params.uniqueNumber
+        }).populate('products').populate('client');
+
         ticket.products.sort((a, b) => a.uniqueCode - b.uniqueCode)
 
         res.json({
@@ -128,26 +134,36 @@ router.post('/product', authenticate, async (req, res) => {
             ticketId,
             isUniqueNumber,
         } = req.body;
-        
-        let ticket = await Ticket.findById({ _id: ticketId });
+
+        let ticket = await Ticket.findById({
+            _id: ticketId
+        });
         let product = null;
 
         if (!isUniqueNumber) {
-            product = await Product.findOne({ _id: criteria });
+            product = await Product.findOne({
+                _id: criteria
+            });
         }
-        
+
         if (isUniqueNumber) {
             if (criteria.length > 4) {
-                product = await Product.findOne({ barCode: criteria });    
+                product = await Product.findOne({
+                    barCode: criteria
+                });
             } else {
-                product = await Product.findOne({ uniqueCode: criteria });
+                product = await Product.findOne({
+                    uniqueCode: criteria
+                });
             }
         }
 
         ticket.totalPrice = ticket.totalPrice + product.price;
         ticket.products.push(product);
         let persistedTicket = await ticket.save();
-        persistedTicket = await Ticket.findOne({ _id: persistedTicket._id }).populate('products')
+        persistedTicket = await Ticket.findOne({
+            _id: persistedTicket._id
+        }).populate('products')
 
         let products = []
         persistedTicket.products.map(product => {
@@ -175,7 +191,12 @@ router.post('/product', authenticate, async (req, res) => {
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
 
-        const order = new Order({ name: product.name, ready: false, terminal: product.terminal, client: ticket.uniqueNumber })
+        const order = new Order({
+            name: product.name,
+            ready: false,
+            terminal: product.terminal,
+            client: ticket.uniqueNumber
+        })
         const persistedOrder = await order.save();
 
         var io = req.app.get('socketio');
@@ -205,15 +226,21 @@ router.post('/client', authenticate, async (req, res) => {
             criteria,
             ticketId,
         } = req.body;
-        
-        let ticket = await Ticket.findById({ _id: ticketId });
-        let client = await Client.findOne({ _id: criteria });
+
+        let ticket = await Ticket.findById({
+            _id: ticketId
+        });
+        let client = await Client.findOne({
+            _id: criteria
+        });
 
         ticket.client = client;
         ticket.name = client.name;
-         
+
         let persistedTicket = await ticket.save();
-        persistedTicket = await Ticket.findOne({ _id: persistedTicket._id }).populate('client')
+        persistedTicket = await Ticket.findOne({
+            _id: persistedTicket._id
+        }).populate('client')
 
         res
             .status(201)
@@ -238,15 +265,21 @@ router.delete('/product', authenticate, async (req, res) => {
             productId,
             ticketId,
         } = req.body;
-        
-        let ticket = await Ticket.findById({ _id: ticketId });
-        let product = await Product.findOne({ _id: productId });
+
+        let ticket = await Ticket.findById({
+            _id: ticketId
+        });
+        let product = await Product.findOne({
+            _id: productId
+        });
 
         ticket.totalPrice = ticket.totalPrice - product.price;
         let index = ticket.products.findIndex(criteria => criteria === product._id)
         ticket.products.splice(index, 1)
         let persistedTicket = await ticket.save();
-        persistedTicket = await Ticket.findOne({ _id: persistedTicket._id }).populate('products')
+        persistedTicket = await Ticket.findOne({
+            _id: persistedTicket._id
+        }).populate('products')
 
         let products = []
         persistedTicket.products.map(product => {
@@ -273,7 +306,7 @@ router.delete('/product', authenticate, async (req, res) => {
         })
         products.sort((a, b) => a.uniqueCode - b.uniqueCode)
         persistedTicket.products = products
-        
+
 
         res
             .status(201)
@@ -323,31 +356,33 @@ router.post('/close/:id', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(req.params.id);
         const cashier = await Cashier.findById(req.body.cashierId);
 
-        let promises = ticket.products.map((productId) => {
-            Product.findById(productId).then(function (product) {
-                //TODO: GET ONLY ONE INSTEAD OF ALL
-                let index = ticket.products.indexOf(product._id)
-                ticket.products.splice(index, 1);
-                ticket.totalPrice -= product.price;
-                product.quantity--;
-                //TODO: CHECK IF CASHIER ALREADY IN PRODUCT
+        let promises = ticket.products.map(async productId => {
+            let product = await Product.findById(productId)
+            let index = ticket.products.indexOf(product._id)
+            ticket.products.splice(index, 1);
+            ticket.totalPrice -= product.price;
+            product.quantity--;
+
+            if (!product.cashiers.includes(cashier._id)) {
+                console.log("DON'T INCLUDE");
                 product.cashiers.push(cashier._id);
-                product.save();
-                cashier.products.push(product._id);
-                cashier.price += product.price;
-            });
+            }
+
+            await product.save();
+            cashier.products.push(product._id);
+            cashier.price += product.price;
         });
 
         Promise.all(promises).then(function () {
-            cashier.save();
-            ticket.remove();
+            // cashier.save();
+            // ticket.remove();
 
             res
-            .status(201)
-            .json({
-                title: 'Sucesso',
-                detail: 'Comanda fechada com sucesso',
-            });
+                .status(201)
+                .json({
+                    title: 'Sucesso',
+                    detail: 'Comanda fechada com sucesso',
+                });
         });
     } catch (err) {
         res.status(400).json({
