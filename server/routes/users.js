@@ -99,7 +99,7 @@ router.post('/login', async (req, res) => {
       .json({
         title: 'Login Successful',
         detail: 'Successfully validated user credentials',
-        csrfToken: session.csrfToken,
+        token: session.token,
       });
   } catch (err) {
     res.status(401).json({
