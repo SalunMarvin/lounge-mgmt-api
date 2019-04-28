@@ -55,6 +55,7 @@ router.post('/', authenticate, async (req, res) => {
         const session = await Session.findOne({ token: req.headers.token });
         const userId = session.userId;
         const user = await User.findById(userId);
+        console.log(user);
         cashier.name = user.name;
         const persistedCashier = await cashier.save();
 
