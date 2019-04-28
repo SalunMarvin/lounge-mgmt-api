@@ -1,6 +1,8 @@
 const express = require('express');
 
 const Cashier = require('../models/cashier');
+const Session = require('../models/session');
+const User = require('../models/user');
 const {
     authenticate
 } = require('../middleware/authenticate');
@@ -50,6 +52,10 @@ router.get('/:id', authenticate, async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
     try {
         const cashier = new Cashier(req.body);
+        const session = await Session.findOne({ token: req.headers.token });
+        const userId = session.userId;
+        const user = await User.findById(userId);
+        cashier.name = user.name;
         const persistedCashier = await cashier.save();
 
         res.json({
