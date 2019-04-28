@@ -31,7 +31,7 @@ router.get('/', authenticate, async (req, res) => {
 
 router.get('/:id', authenticate, async (req, res) => {
     try {
-        const cashier = await Cashier.findById(req.params.id);
+        const cashier = await Cashier.findById(req.params.id).populate('products');
 
         res.json({
             title: 'Successful operation',
