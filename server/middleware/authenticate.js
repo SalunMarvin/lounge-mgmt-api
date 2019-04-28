@@ -5,7 +5,7 @@ const authenticate = async (req, res, next) => {
   try {
     // const { token } = req.cookies;
     const { token } = req.headers;
-    console.log(req.cookies);
+    console.log(req.headers.token);
     if (typeof token !== 'string') {
       throw new Error('Request cookie is invalid.');
     }
