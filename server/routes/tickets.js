@@ -374,8 +374,8 @@ router.post('/close/:id', authenticate, async (req, res) => {
         });
 
         Promise.all(promises).then(function () {
-            // cashier.save();
-            // ticket.remove();
+            cashier.save();
+            ticket.remove();
 
             res
                 .status(201)
