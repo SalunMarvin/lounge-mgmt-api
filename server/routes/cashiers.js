@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Cashier = require('../models/cashier');
+const Product = require('../models/product');
 const Session = require('../models/session');
 const User = require('../models/user');
 const {
@@ -92,6 +93,36 @@ router.post('/close/:id', authenticate, async (req, res) => {
             errors: [{
                 title: 'Erro',
                 detail: 'Erro',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
+router.post('/:cashierId/pay/:productId', authenticate, async (req, res) => {
+    try {
+        const cashier = await Cashier.findById(req.params.cashierId);
+        const product = await Product.findById(req.params.productId);
+        cashier.price += product.price;
+        cashier.products.push(product._id);
+        product.quantity--;
+        product.cashiers.push(cashier._id);
+        const persistedCashier = await cashier.save();
+        const persistedProduct = await product.save();
+
+        res
+            .status(201)
+            .json({
+                title: 'Sucesso',
+                detail: 'Valor pago com sucesso',
+                persistedCashier,
+                persistedProduct
+            });
+    } catch (err) {
+        res.status(400).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Não foi possível pagar por este produto.',
                 errorMessage: err.message,
             }, ],
         });
