@@ -240,7 +240,7 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
         });
 
         Promise.all(promises).then(function () {
-            const persistedCashier = await cashier.save();
+            const persistedCashier = cashier.save();
 
             res.json({
                 title: 'Successful operation',
