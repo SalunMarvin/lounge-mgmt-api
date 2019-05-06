@@ -153,8 +153,20 @@ router.delete('/:id', authenticate, async (req, res) => {
 
 router.post('/search', authenticate, async (req, res) => {
     try {
-        const { name } = req.body;
-        const products = await Product.find({ name: { "$regex": name, "$options": "i" } });
+        let products = [];
+        const { name, code } = req.body;
+
+        if (name && name !== "") {
+            products = await Product.find({ name: { "$regex": name, "$options": "i" } });
+        }
+        
+        if (code && code !== "") {
+            if (code.length > 4) {
+                products = await Product.find({ barCode: code });
+            } else {
+                products = await Product.find({ uniqueCode: code });
+            }
+        }
 
         res.json({
             title: 'Successful operation',
@@ -176,6 +188,45 @@ router.post('/pay', authenticate, async (req, res) => {
     try {
         const { ticketId, cashierId, productsIds } = req.body;
         const ticket = await Ticket.findById(ticketId);
+        const cashier = await Cashier.findById(cashierId);
+
+        let promises = productsIds.map((productId) => {
+            return Product.findById(productId).then(function (product) {
+                let index = ticket.products.indexOf(product._id)
+                ticket.products.splice(index, 1);
+                ticket.totalPrice -= product.price;
+                product.quantity--;
+                product.cashiers.push(cashier._id);
+                product.save();
+                cashier.products.push(product._id);
+                cashier.price += product.price;
+            });
+        });
+
+        Promise.all(promises).then(function () {
+            cashier.save();
+            const persistedTicket = ticket.save();
+
+            res.json({
+                title: 'Successful operation',
+                detail: 'Successfully got all products',
+                persistedTicket,
+            });
+        });
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Unauthorized',
+                detail: 'Not authorized to access this route',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
+router.post('/pay/cashier', authenticate, async (req, res) => {
+    try {
+        const { cashierId, productsIds } = req.body;
         const cashier = await Cashier.findById(cashierId);
 
         let promises = productsIds.map((productId) => {
