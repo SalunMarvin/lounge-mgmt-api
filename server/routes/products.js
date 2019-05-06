@@ -231,9 +231,6 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
 
         let promises = productsIds.map((productId) => {
             return Product.findById(productId).then(function (product) {
-                let index = ticket.products.indexOf(product._id)
-                ticket.products.splice(index, 1);
-                ticket.totalPrice -= product.price;
                 product.quantity--;
                 product.cashiers.push(cashier._id);
                 product.save();
