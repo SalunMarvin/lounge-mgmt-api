@@ -35,7 +35,8 @@ const ProductSchema = new mongoose.Schema({
     },
     terminal: {
         type: Schema.Types.ObjectId,
-        ref: 'Terminal'
+        ref: 'Terminal',
+        required: false,
     },
     cashiers: [{
         type: Schema.Types.ObjectId,
