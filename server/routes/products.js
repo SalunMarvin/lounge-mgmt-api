@@ -210,29 +210,35 @@ router.post('/pay', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(ticketId);
         const cashier = await Cashier.findById(cashierId);
 
-        let promises = productsIds.map((productId) => {
-            return Product.findById(productId).then(function (product) {
-                let index = ticket.products.indexOf(product._id)
-                ticket.products.splice(index, 1);
-                ticket.totalPrice -= product.price;
-                product.quantity--;
+        productsIds.reduce(async (previousPromise, nextID) => {
+            await previousPromise;
+            let product = await Product.findById(nextID);
+
+            let index = ticket.products.indexOf(product._id)
+            ticket.products.splice(index, 1);
+            ticket.totalPrice -= product.price;
+
+            product.quantity--;
+            
+            if (product.cashiers.indexOf(cashier._id) === -1) {
                 product.cashiers.push(cashier._id);
-                product.save();
-                cashier.products.push(product._id);
-                cashier.price += product.price;
-            });
+            }
+
+            cashier.products.push(product._id);
+            cashier.price += product.price;
+
+            return await product.save();
+        }, Promise.resolve());
+
+        await cashier.save();
+        const persistedTicket = await ticket.save();
+
+        res.json({
+            title: 'OK',
+            detail: 'Produtos pagos com sucesso',
+            persistedTicket,
         });
 
-        Promise.all(promises).then(function () {
-            cashier.save();
-            const persistedTicket = ticket.save();
-
-            res.json({
-                title: 'Successful operation',
-                detail: 'Successfully got all products',
-                persistedTicket,
-            });
-        });
     } catch (err) {
         res.status(401).json({
             errors: [{
@@ -252,29 +258,35 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
         } = req.body;
         const cashier = await Cashier.findById(cashierId);
 
-        productsIds.map((productId) => {
-            Product.findById(productId).then(function (product) {
-                product.quantity--;
-                product.cashiers.push(cashier._id);
-                product.save();
-                cashier.products.push(product._id);
-                cashier.price += product.price;
-            });
-        });
+        productsIds.reduce(async (previousPromise, nextID) => {
+            await previousPromise;
+            let product = await Product.findById(nextID);
 
-        const persistedCashier = cashier.save();
+            product.quantity--;
+
+            if (product.cashiers.indexOf(cashier._id) === -1) {
+                product.cashiers.push(cashier._id);
+            }
+
+            cashier.products.push(product._id);
+            cashier.price += product.price;
+
+            return await product.save();
+        }, Promise.resolve());
+
+        const persistedCashier = await cashier.save();
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all products',
+            title: 'OK',
+            detail: 'Venda realizada com sucesso!',
             persistedCashier,
         });
 
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'Erro',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -289,28 +301,24 @@ router.post('/remove', authenticate, async (req, res) => {
         } = req.body;
         const ticket = await Ticket.findById(ticketId);
 
-        let promises = productsIds.map((productId) => {
-            return Product.findById(productId).then(function (product) {
-                let index = ticket.products.indexOf(product._id)
-                ticket.products.splice(index, 1);
-                product.save();
-            });
+        productsIds.map(productId => {
+            let index = ticket.products.indexOf(productId)
+            ticket.products.splice(index, 1);
         });
 
-        Promise.all(promises).then(function () {
-            ticket.save();
+        const persistedTicket = await ticket.save();
 
-            res.json({
-                title: 'Successful operation',
-                detail: 'Successfully got all products',
-                ticket,
-            });
+        res.json({
+            title: 'OK',
+            detail: 'Produto removido da comanda',
+            persistedTicket,
         });
+
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'Erro',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });

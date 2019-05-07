@@ -53,7 +53,9 @@ router.get('/:id', authenticate, async (req, res) => {
 router.post('/', authenticate, async (req, res) => {
     try {
         const cashier = new Cashier(req.body);
-        const session = await Session.findOne({ token: req.headers.token });
+        const session = await Session.findOne({
+            token: req.headers.token
+        });
         const userId = session.userId;
         const user = await User.findById(userId);
         console.log(user);
@@ -106,7 +108,9 @@ router.post('/:cashierId/pay/:productId', authenticate, async (req, res) => {
         cashier.price += product.price;
         cashier.products.push(product._id);
         product.quantity--;
-        product.cashiers.push(cashier._id);
+        if (product.cashiers.indexOf(cashier._id) === -1) {
+            product.cashiers.push(cashier._id);
+        }
         const persistedCashier = await cashier.save();
         const persistedProduct = await product.save();
 

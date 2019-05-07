@@ -329,14 +329,19 @@ router.delete('/product', authenticate, async (req, res) => {
 router.post('/pay/:id', authenticate, async (req, res) => {
     try {
         const ticket = await Ticket.findById(req.params.id);
+        const cashier = await Cashier.findById(req.body.cashierId);
+
         ticket.totalPrice -= req.body.price;
         ticket.paid += req.body.price;
+        cashier.price += req.body.price;
+        
         const persistedTicket = await ticket.save();
+        await cashier.save();
 
         res
             .status(201)
             .json({
-                title: 'Sucesso',
+                title: 'OK',
                 detail: 'Valor pago com sucesso',
                 persistedTicket
             });
@@ -344,7 +349,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
         res.status(400).json({
             errors: [{
                 title: 'Erro',
-                detail: 'Não foi possível pagar por este produto.',
+                detail: 'Não foi possível pagar este valor.',
                 errorMessage: err.message,
             }, ],
         });
@@ -356,34 +361,37 @@ router.post('/close/:id', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(req.params.id);
         const cashier = await Cashier.findById(req.body.cashierId);
 
-        let promises = ticket.products.map(async productId => {
-            let product = await Product.findById(productId)
+        productsIds.reduce(async (previousPromise, nextID) => {
+            await previousPromise;
+            let product = await Product.findById(nextID);
+
             let index = ticket.products.indexOf(product._id)
             ticket.products.splice(index, 1);
             ticket.totalPrice -= product.price;
+
             product.quantity--;
 
-            if (!product.cashiers.includes(cashier._id)) {
-                console.log("DON'T INCLUDE");
+            if (product.cashiers.indexOf(cashier._id) === -1) {
                 product.cashiers.push(cashier._id);
             }
 
-            await product.save();
             cashier.products.push(product._id);
             cashier.price += product.price;
-        });
 
-        Promise.all(promises).then(function () {
-            cashier.save();
-            ticket.remove();
+            return await product.save();
+        }, Promise.resolve());
 
-            res
-                .status(201)
-                .json({
-                    title: 'Sucesso',
-                    detail: 'Comanda fechada com sucesso',
-                });
-        });
+
+        cashier.save();
+        ticket.remove();
+
+        res
+            .status(201)
+            .json({
+                title: 'Sucesso',
+                detail: 'Comanda fechada com sucesso',
+            });
+
     } catch (err) {
         res.status(400).json({
             errors: [{
