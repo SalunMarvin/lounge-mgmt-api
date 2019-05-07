@@ -61,11 +61,13 @@ router.post('/', authenticate, async (req, res) => {
         });
 
         Array.prototype.diff = function (a) {
-            return this.filter(function (i) { return a.indexOf(i) < 0; });
+            return this.filter(function (i) {
+                return a.indexOf(i) < 0;
+            });
         };
 
         let uniqueCodesToUse = allUniqueCodes.diff(uniqueCodes);
-        
+
         if (!req.body.uniqueCode || req.body.uniqueCode === '' || req.body.uniqueCode === null) {
             product.uniqueCode = uniqueCodesToUse[0];
         }
@@ -133,7 +135,9 @@ router.put('/:id', authenticate, async (req, res) => {
 
 router.delete('/:id', authenticate, async (req, res) => {
     try {
-        const products = await Product.findByIdAndDelete({ _id: req.params.id});
+        const products = await Product.findByIdAndDelete({
+            _id: req.params.id
+        });
 
         res.json({
             title: 'Successful operation',
@@ -154,17 +158,29 @@ router.delete('/:id', authenticate, async (req, res) => {
 router.post('/search', authenticate, async (req, res) => {
     try {
         let products = [];
-        const { name, code } = req.body;
+        const {
+            name,
+            code
+        } = req.body;
 
         if (name && name !== "") {
-            products = await Product.find({ name: { "$regex": name, "$options": "i" } });
+            products = await Product.find({
+                name: {
+                    "$regex": name,
+                    "$options": "i"
+                }
+            });
         }
-        
+
         if (code && code !== "") {
             if (code.length > 4) {
-                products = await Product.find({ barCode: code });
+                products = await Product.find({
+                    barCode: code
+                });
             } else {
-                products = await Product.find({ uniqueCode: code });
+                products = await Product.find({
+                    uniqueCode: code
+                });
             }
         }
 
@@ -186,7 +202,11 @@ router.post('/search', authenticate, async (req, res) => {
 
 router.post('/pay', authenticate, async (req, res) => {
     try {
-        const { ticketId, cashierId, productsIds } = req.body;
+        const {
+            ticketId,
+            cashierId,
+            productsIds
+        } = req.body;
         const ticket = await Ticket.findById(ticketId);
         const cashier = await Cashier.findById(cashierId);
 
@@ -226,11 +246,14 @@ router.post('/pay', authenticate, async (req, res) => {
 
 router.post('/pay/cashier', authenticate, async (req, res) => {
     try {
-        const { cashierId, productsIds } = req.body;
+        const {
+            cashierId,
+            productsIds
+        } = req.body;
         const cashier = await Cashier.findById(cashierId);
 
-        let promises = productsIds.map((productId) => {
-            return Product.findById(productId).then(function (product) {
+        productsIds.map((productId) => {
+            Product.findById(productId).then(function (product) {
                 product.quantity--;
                 product.cashiers.push(cashier._id);
                 product.save();
@@ -239,15 +262,14 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
             });
         });
 
-        Promise.all(promises).then(function () {
-            const persistedCashier = cashier.save();
+        const persistedCashier = cashier.save();
 
-            res.json({
-                title: 'Successful operation',
-                detail: 'Successfully got all products',
-                persistedCashier,
-            });
+        res.json({
+            title: 'Successful operation',
+            detail: 'Successfully got all products',
+            persistedCashier,
         });
+
     } catch (err) {
         res.status(401).json({
             errors: [{
@@ -261,7 +283,10 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
 
 router.post('/remove', authenticate, async (req, res) => {
     try {
-        const { ticketId , productsIds } = req.body;
+        const {
+            ticketId,
+            productsIds
+        } = req.body;
         const ticket = await Ticket.findById(ticketId);
 
         let promises = productsIds.map((productId) => {
