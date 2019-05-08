@@ -301,10 +301,16 @@ router.post('/remove', authenticate, async (req, res) => {
         } = req.body;
         const ticket = await Ticket.findById(ticketId);
 
-        productsIds.map(productId => {
-            let index = ticket.products.indexOf(productId)
+        await productsIds.reduce(async (previousPromise, nextID) => {
+            await previousPromise;
+            let product = await Product.findById(nextID);
+
+            let index = ticket.products.indexOf(nextID);
             ticket.products.splice(index, 1);
-        });
+            ticket.totalPrice -= product.price;
+
+            return await product;
+        }, Promise.resolve());
 
         const persistedTicket = await ticket.save();
 
