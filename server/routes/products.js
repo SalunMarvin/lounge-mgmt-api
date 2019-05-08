@@ -210,7 +210,7 @@ router.post('/pay', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(ticketId);
         const cashier = await Cashier.findById(cashierId);
 
-        productsIds.reduce(async (previousPromise, nextID) => {
+        await productsIds.reduce(async (previousPromise, nextID) => {
             await previousPromise;
             let product = await Product.findById(nextID);
 
@@ -258,7 +258,7 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
         } = req.body;
         const cashier = await Cashier.findById(cashierId);
 
-        productsIds.reduce(async (previousPromise, nextID) => {
+        await productsIds.reduce(async (previousPromise, nextID) => {
             await previousPromise;
             let product = await Product.findById(nextID);
 
