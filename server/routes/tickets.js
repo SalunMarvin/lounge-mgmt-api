@@ -358,8 +358,8 @@ router.post('/pay/:id', authenticate, async (req, res) => {
 
 router.post('/close/:id', authenticate, async (req, res) => {
     try {
-        const ticket = await Ticket.findById(req.params.id);
-        const cashier = await Cashier.findById(req.body.cashierId);
+        let ticket = await Ticket.findById(req.params.id);
+        let cashier = await Cashier.findById(req.body.cashierId);
 
         ticket.products.reduce(async (previousPromise, nextID) => {
             await previousPromise;
@@ -370,8 +370,11 @@ router.post('/close/:id', authenticate, async (req, res) => {
             ticket.totalPrice -= product.price;
 
             product.quantity--;
-            product.cashiers.push(cashier._id);
-            
+
+            if (product.cashiers.indexOf(cashier._id) === -1) {
+                product.cashiers.push(cashier._id);
+            }
+
             cashier.products.push(product._id);
             cashier.price += product.price;
 
@@ -379,8 +382,8 @@ router.post('/close/:id', authenticate, async (req, res) => {
         }, Promise.resolve());
 
 
-        cashier.save();
-        ticket.remove();
+        await cashier.save();
+        await ticket.remove();
 
         res
             .status(201)
