@@ -361,7 +361,7 @@ router.post('/close/:id', authenticate, async (req, res) => {
         let ticket = await Ticket.findById(req.params.id);
         let cashier = await Cashier.findById(req.body.cashierId);
 
-        ticket.products.reduce(async (previousPromise, nextID) => {
+        await ticket.products.reduce(async (previousPromise, nextID) => {
             await previousPromise;
             let product = await Product.findById(nextID);
 
