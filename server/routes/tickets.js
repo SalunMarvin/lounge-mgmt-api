@@ -378,7 +378,6 @@ router.post('/close/:id', authenticate, async (req, res) => {
             cashier.products.push(product._id);
             cashier.price += product.price;
 
-            await cashier.save();
             return await product.save();
         }, Promise.resolve());
 
