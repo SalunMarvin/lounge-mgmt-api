@@ -370,11 +370,8 @@ router.post('/close/:id', authenticate, async (req, res) => {
             ticket.totalPrice -= product.price;
 
             product.quantity--;
-
-            if (product.cashiers.indexOf(cashier._id) === -1) {
-                product.cashiers.push(cashier._id);
-            }
-
+            product.cashiers.push(cashier._id);
+            
             cashier.products.push(product._id);
             cashier.price += product.price;
 
