@@ -37,4 +37,14 @@ const CashierSchema = new mongoose.Schema({
 
 CashierSchema.plugin(uniqueValidator);
 
+// Getter
+CashierSchema.path('price').get(function (num) {
+    return (num / 100).toFixed(2);
+});
+
+// Setter
+CashierSchema.path('price').set(function (num) {
+    return num * 100;
+});
+
 module.exports = mongoose.model('Cashier', CashierSchema);
