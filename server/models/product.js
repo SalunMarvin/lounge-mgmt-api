@@ -46,14 +46,4 @@ const ProductSchema = new mongoose.Schema({
 
 ProductSchema.plugin(uniqueValidator);
 
-// Getter
-ProductSchema.path('price').get(function (num) {
-    return (num / 100).toFixed(2);
-});
-
-// Setter
-ProductSchema.path('price').set(function (num) {
-    return num * 100;
-});
-
 module.exports = mongoose.model('Product', ProductSchema);

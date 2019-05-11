@@ -48,14 +48,4 @@ const TicketSchema = new mongoose.Schema({
 
 TicketSchema.plugin(uniqueValidator);
 
-// Getter
-TicketSchema.path('totalPrice').get(function (num) {
-    return (num / 100).toFixed(2);
-});
-
-// Setter
-TicketSchema.path('totalPrice').set(function (num) {
-    return num * 100;
-});
-
 module.exports = mongoose.model('Ticket', TicketSchema);
