@@ -10,7 +10,7 @@ const ClientSchema = new mongoose.Schema({
     },
     uniqueNumber: {
         type: String,
-        required: false,
+        required: true,
         trim: true,
         unique: true,
     },
@@ -22,10 +22,10 @@ const ClientSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
+        required: false,
         minlength: 1,
         trim: true,
-        unique: true,
+        unique: false,
     },
 });
 
