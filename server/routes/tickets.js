@@ -23,8 +23,8 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Erro',
-                detail: 'Não foi possível listar as comandas',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -71,8 +71,8 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Erro',
-                detail: 'Não foi possível listar as comandas',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -95,8 +95,8 @@ router.get('/details/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Erro',
-                detail: 'Não foi possível listar as comandas',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -112,15 +112,15 @@ router.post('/', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
-                title: 'Mesa/Cliente adicionado com sucesso',
-                detail: 'Adicione novos produtos à comanda',
+                title: 'OK',
+                detail: 'Comanda criada com sucesso!',
                 persistedTicket
             });
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Erro',
-                detail: 'Não foi possível adicionar uma nova mesa ou cliente.',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -212,8 +212,8 @@ router.post('/product', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Erro',
-                detail: 'Não foi possível adicionar um novo produto',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -251,75 +251,8 @@ router.post('/client', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Erro',
-                detail: 'Não foi possível adicionar um novo cliente',
-                errorMessage: err.message,
-            }, ],
-        });
-    }
-});
-
-router.delete('/product', authenticate, async (req, res) => {
-    try {
-        const {
-            productId,
-            ticketId,
-        } = req.body;
-
-        let ticket = await Ticket.findById({
-            _id: ticketId
-        });
-        let product = await Product.findOne({
-            _id: productId
-        });
-
-        ticket.totalPrice = ticket.totalPrice - product.price;
-        let index = ticket.products.findIndex(criteria => criteria === product._id)
-        ticket.products.splice(index, 1)
-        let persistedTicket = await ticket.save();
-        persistedTicket = await Ticket.findOne({
-            _id: persistedTicket._id
-        }).populate('products')
-
-        let products = []
-        persistedTicket.products.map(product => {
-            if (!products.some(item => item._id === product._id)) {
-                let newProduct = product;
-                product.quantity = 1;
-                products.push(newProduct)
-            } else {
-                let arrayProduct = products.find(criteria => criteria._id === product._id)
-                let newProduct = {
-                    _id: arrayProduct._id,
-                    name: arrayProduct.name,
-                    barCode: arrayProduct.barCode,
-                    quantity: arrayProduct.quantity + 1,
-                    price: arrayProduct.price + product.price,
-                    uniqueCode: arrayProduct.uniqueCode,
-                }
-
-                let newArray = [arrayProduct];
-                products = products.filter(item => !newArray.includes(item))
-
-                products.push(newProduct);
-            }
-        })
-        products.sort((a, b) => a.uniqueCode - b.uniqueCode)
-        persistedTicket.products = products
-
-
-        res
-            .status(201)
-            .json({
-                title: 'OK',
-                detail: 'Produto removido com sucesso',
-                persistedTicket
-            });
-    } catch (err) {
-        res.status(400).json({
-            errors: [{
-                title: 'Erro',
-                detail: 'Não foi possível remover um produto',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -334,7 +267,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
         ticket.totalPrice -= req.body.price;
         ticket.paid += req.body.price;
         cashier.price += req.body.price;
-        
+
         const persistedTicket = await ticket.save();
         await cashier.save();
 
@@ -348,7 +281,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Erro',
+                title: 'ERRO',
                 detail: 'Não foi possível pagar este valor.',
                 errorMessage: err.message,
             }, ],
@@ -361,9 +294,9 @@ router.post('/close/:id', authenticate, async (req, res) => {
         let ticket = await Ticket.findById(req.params.id);
         let cashier = await Cashier.findById(req.body.cashierId);
 
-        await ticket.products.reduce(async (previousPromise, nextID) => {
+        await ticket.products.reduce(async (previousPromise, nextId) => {
             await previousPromise;
-            let product = await Product.findById(nextID);
+            let product = await Product.findById(nextId);
 
             let index = ticket.products.indexOf(product._id)
             ticket.products.splice(index, 1);
@@ -395,7 +328,7 @@ router.post('/close/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Erro',
+                title: 'ERRO',
                 detail: 'Não foi possível adicionar uma nova mesa ou cliente.',
                 errorMessage: err.message,
             }, ],

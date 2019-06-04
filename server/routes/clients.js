@@ -12,15 +12,15 @@ router.get('/', authenticate, async (req, res) => {
         const clients = await Client.find({});
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all clients',
+            title: 'OK',
+            detail: 'Clientes listados com sucesso!',
             clients,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -35,15 +35,15 @@ router.post('/', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
-                title: 'Client Registration Successful',
-                detail: 'Successfully registered new client',
+                title: 'OK',
+                detail: 'Cliente cadastrado com sucesso!',
                 persistedClient
             });
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Client Registration Error',
-                detail: 'Something went wrong during client registration process.',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -56,15 +56,15 @@ router.post('/search', authenticate, async (req, res) => {
         const clients = await Client.find({ name: { "$regex": name, "$options": "i" } });
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all clients',
+            title: 'OK',
+            detail: 'Cliente encontrado com sucesso!',
             clients,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });

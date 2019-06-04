@@ -12,15 +12,15 @@ router.get('/', authenticate, async (req, res) => {
         const roles = await Role.find({});
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all roles',
+            title: 'OK',
+            detail: 'Perfis encontrados com sucesso!',
             roles,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });

@@ -13,10 +13,10 @@ router.post('/register', async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!isEmail(email)) {
-      throw new Error('Email must be a valid email address.');
+      throw new Error('O email deve ser válido.');
     }
     if (typeof password !== 'string') {
-      throw new Error('Password must be a string.');
+      throw new Error('A senha deve ser do tipo texto.');
     }
     const user = new User({ email, password });
     const persistedUser = await user.save();
@@ -33,8 +33,8 @@ router.post('/register', async (req, res) => {
       })
       .status(201)
       .json({
-        title: 'User Registration Successful',
-        detail: 'Successfully registered new user',
+        title: 'OK',
+        detail: 'Usuário cadastrado com sucesso!',
         csrfToken: session.csrfToken,
       });
   } catch (err) {
@@ -57,8 +57,8 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({
         errors: [
           {
-            title: 'Bad Request',
-            detail: 'Email must be a valid email address',
+            title: 'ERRO',
+            detail: 'O email deve ser válido',
           },
         ],
       });
@@ -67,8 +67,8 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({
         errors: [
           {
-            title: 'Bad Request',
-            detail: 'Password must be a string',
+            title: 'ERRO',
+            detail: 'A senha deve ser um texto',
           },
         ],
       });
@@ -97,16 +97,16 @@ router.post('/login', async (req, res) => {
         secure: true,
       })
       .json({
-        title: 'Login Successful',
-        detail: 'Successfully validated user credentials',
+        title: 'OK',
+        detail: 'Login realizado com sucesso.',
         token: session.token,
       });
   } catch (err) {
     res.status(401).json({
       errors: [
         {
-          title: 'Invalid Credentials',
-          detail: 'Check email and password combination',
+          title: 'ERRO',
+          detail: 'Verifique se o email e a senha estão corretos!',
           errorMessage: err.message,
         },
       ],
@@ -120,8 +120,8 @@ router.get('/me', authenticate, async (req, res) => {
     const user = await User.findById({ _id: userId }, { email: 1, name: 1 });
 
     res.json({
-      title: 'Authentication successful',
-      detail: 'Successfully authenticated user',
+      title: 'OK',
+      detail: 'Usuário autenticado com sucesso!',
       user,
     });
   } catch (err) {
@@ -205,15 +205,15 @@ router.put('/logout', authenticate, async (req, res) => {
     res.clearCookie('token');
 
     res.json({
-      title: 'Logout Successful',
-      detail: 'Successfuly expired login session',
+      title: 'OK',
+      detail: 'Logout realizado com sucesso!',
     });
   } catch (err) {
     res.status(400).json({
       errors: [
         {
-          title: 'Logout Failed',
-          detail: 'Something went wrong during the logout process.',
+          title: 'ERRO',
+          detail: 'Não foi possível realizar o logout!',
           errorMessage: err.message,
         },
       ],

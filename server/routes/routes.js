@@ -12,15 +12,15 @@ router.get('/', authenticate, async (req, res) => {
         const routes = await Route.find({});
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all routes',
+            title: 'OK',
+            detail: 'Rotas encontradas com sucesso!',
             routes,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });

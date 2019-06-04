@@ -12,15 +12,15 @@ router.get('/', authenticate, async (req, res) => {
         const orders = await Order.find({}).sort({'created': 1});
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all orders',
+            title: 'OK',
+            detail: 'Pedidos encontrados com sucesso!',
             orders,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -32,15 +32,15 @@ router.get('/terminal/:id', authenticate, async (req, res) => {
         const orders = await Order.find({ terminal: req.params.id, ready: false }).sort({'created': 1});
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all orders',
+            title: 'OK',
+            detail: 'Pedidos encontrados com sucesso!',
             orders,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -53,15 +53,15 @@ router.post('/', authenticate, async (req, res) => {
         const persistedOrder = await order.save();
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully created order',
+            title: 'OK',
+            detail: 'Pedido criado com sucesso!',
             persistedOrder,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -79,15 +79,15 @@ router.post('/ready/:id', authenticate, async (req, res) => {
         io.emit('orderReady', persistedOrder);
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully created order',
+            title: 'OK',
+            detail: 'Pedido pronto!',
             persistedOrder,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });

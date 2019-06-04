@@ -10,9 +10,9 @@ const ClientSchema = new mongoose.Schema({
     },
     uniqueNumber: {
         type: String,
-        required: true,
+        required: false,
         trim: true,
-        unique: true,
+        unique: false,
     },
     birthDate: {
         type: Date,
@@ -20,7 +20,7 @@ const ClientSchema = new mongoose.Schema({
         trim: true,
         unique: false,
     },
-    email: {
+    phone: {
         type: String,
         required: false,
         minlength: 1,

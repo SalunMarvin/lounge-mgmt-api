@@ -14,15 +14,15 @@ router.get('/', authenticate, async (req, res) => {
         const products = await Product.find({}).populate('terminal');
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all products',
+            title: 'OK',
+            detail: 'Produtos encontrados com sucesso!',
             products,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -34,15 +34,15 @@ router.get('/:id', authenticate, async (req, res) => {
         const product = await Product.findById(req.params.id);
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got product details',
+            title: 'OK',
+            detail: 'Produto encontrado com sucesso!',
             product,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -77,15 +77,15 @@ router.post('/', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
-                title: 'Product Registration Successful',
-                detail: 'Successfully registered new product',
+                title: 'OK',
+                detail: 'Produto cadastrado com sucesso!',
                 persistedProduct
             });
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Product Registration Error',
-                detail: 'Something went wrong during product registration process.',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -117,15 +117,15 @@ router.put('/:id', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
-                title: 'Product Registration Successful',
-                detail: 'Successfully registered new product',
+                title: 'OK',
+                detail: 'Produto alterado com sucesso!',
                 persistedProduct
             });
     } catch (err) {
         res.status(400).json({
             errors: [{
-                title: 'Product Registration Error',
-                detail: 'Something went wrong during product registration process.',
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -140,15 +140,15 @@ router.delete('/:id', authenticate, async (req, res) => {
         });
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully delete product',
+            title: 'OK',
+            detail: 'Produto excluído com sucesso!',
             products,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'Erro',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -185,15 +185,15 @@ router.post('/search', authenticate, async (req, res) => {
         }
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully got all products',
+            title: 'OK',
+            detail: 'Produtos encontrados com sucesso!',
             products,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'Erro',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -210,16 +210,16 @@ router.post('/pay', authenticate, async (req, res) => {
         const ticket = await Ticket.findById(ticketId);
         const cashier = await Cashier.findById(cashierId);
 
-        await productsIds.reduce(async (previousPromise, nextID) => {
+        await productsIds.reduce(async (previousPromise, nextId) => {
             await previousPromise;
-            let product = await Product.findById(nextID);
+            let product = await Product.findById(nextId);
 
             let index = ticket.products.indexOf(product._id)
             ticket.products.splice(index, 1);
             ticket.totalPrice -= product.price;
 
             product.quantity--;
-            
+
             if (product.cashiers.indexOf(cashier._id) === -1) {
                 product.cashiers.push(cashier._id);
             }
@@ -235,15 +235,15 @@ router.post('/pay', authenticate, async (req, res) => {
 
         res.json({
             title: 'OK',
-            detail: 'Produtos pagos com sucesso',
+            detail: 'Produto(s) pago(s) com sucesso (com baixa de estoque)!',
             persistedTicket,
         });
 
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
-                detail: 'Not authorized to access this route',
+                title: 'Erro',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
         });
@@ -258,9 +258,9 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
         } = req.body;
         const cashier = await Cashier.findById(cashierId);
 
-        await productsIds.reduce(async (previousPromise, nextID) => {
+        await productsIds.reduce(async (previousPromise, nextId) => {
             await previousPromise;
-            let product = await Product.findById(nextID);
+            let product = await Product.findById(nextId);
 
             product.quantity--;
 
@@ -278,7 +278,7 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
 
         res.json({
             title: 'OK',
-            detail: 'Venda realizada com sucesso!',
+            detail: 'Venda realizada com sucesso (com baixa de estoque)!',
             persistedCashier,
         });
 
@@ -301,11 +301,11 @@ router.post('/remove', authenticate, async (req, res) => {
         } = req.body;
         const ticket = await Ticket.findById(ticketId);
 
-        await productsIds.reduce(async (previousPromise, nextID) => {
+        await productsIds.reduce(async (previousPromise, nextId) => {
             await previousPromise;
-            let product = await Product.findById(nextID);
+            let product = await Product.findById(nextId);
 
-            let index = ticket.products.indexOf(nextID);
+            let index = ticket.products.indexOf(nextId);
             ticket.products.splice(index, 1);
             ticket.totalPrice -= product.price;
 
@@ -316,7 +316,47 @@ router.post('/remove', authenticate, async (req, res) => {
 
         res.json({
             title: 'OK',
-            detail: 'Produto removido da comanda',
+            detail: 'Produto(s) removido(s) da comanda (sem baixa de estoque)!',
+            persistedTicket,
+        });
+
+    } catch (err) {
+        res.status(401).json({
+            errors: [{
+                title: 'Erro',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
+router.post('/remove-from-stock', authenticate, async (req, res) => {
+    try {
+        const {
+            ticketId,
+            productsIds
+        } = req.body;
+        const ticket = await Ticket.findById(ticketId);
+
+        await productsIds.reduce(async (previousPromise, nextId) => {
+            await previousPromise;
+            let product = await Product.findById(nextId);
+
+            product.quantity--;
+
+            let index = ticket.products.indexOf(nextId);
+            ticket.products.splice(index, 1);
+            ticket.totalPrice -= product.price;
+
+            return await product;
+        }, Promise.resolve());
+
+        const persistedTicket = await ticket.save();
+
+        res.json({
+            title: 'OK',
+            detail: 'Baixa de estoque do(s) produto(s) concluída!',
             persistedTicket,
         });
 
