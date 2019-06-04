@@ -127,6 +127,34 @@ router.post('/', authenticate, async (req, res) => {
     }
 });
 
+router.post('/move/:uniqueNumber', authenticate, async (req, res) => {
+    try {
+        let ticket = await Ticket.findOne({
+            uniqueNumber: req.params.uniqueNumber
+        });
+
+        ticket.uniqueNumber = req.body.uniqueNumber;
+
+        const persistedTicket = await ticket.save();
+
+        res
+            .status(201)
+            .json({
+                title: 'OK',
+                detail: 'Comanda movida com sucesso!',
+                persistedTicket
+            });
+    } catch (err) {
+        res.status(400).json({
+            errors: [{
+                title: 'ERRO',
+                detail: 'Erro inesperado. Contate o administrador do sistema.',
+                errorMessage: err.message,
+            }, ],
+        });
+    }
+});
+
 router.post('/product', authenticate, async (req, res) => {
     try {
         const {
