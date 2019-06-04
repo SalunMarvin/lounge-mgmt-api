@@ -70,18 +70,17 @@ router.post('/', authenticate, async (req, res) => {
 
 router.post('/ready/:id', authenticate, async (req, res) => {
     try {
-        const order = await Order.findById(req.params.id);
-        order.ready = true;
-
-        const persistedOrder = await order.save();
+        const order = await Order.findByIdAndDelete({
+            _id: req.params.id
+        });
 
         var io = req.app.get('socketio');
-        io.emit('orderReady', persistedOrder);
+        io.emit('orderReady', order);
 
         res.json({
             title: 'OK',
             detail: 'Pedido pronto!',
-            persistedOrder,
+            order,
         });
     } catch (err) {
         res.status(401).json({
