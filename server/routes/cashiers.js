@@ -15,6 +15,7 @@ router.get('/', authenticate, async (req, res) => {
         const cashiers = await Cashier.find({}).sort({'openDate': -1});
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Caixas encontrados com sucesso!',
             cashiers,
@@ -22,6 +23,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -35,6 +37,7 @@ router.get('/:id', authenticate, async (req, res) => {
         const cashier = await Cashier.findById(req.params.id).populate('products');
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Caixa encontrado com sucesso!',
             cashier,
@@ -42,6 +45,7 @@ router.get('/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -63,14 +67,16 @@ router.post('/', authenticate, async (req, res) => {
         const persistedCashier = await cashier.save();
 
         res.json({
-            title: 'Successful operation',
-            detail: 'Successfully saved cashier',
+            type: 'success',
+            title: 'OK',
+            detail: 'Caixa criado com sucesso',
             persistedCashier,
         });
     } catch (err) {
         res.status(401).json({
             errors: [{
-                title: 'Unauthorized',
+                type: 'alert',
+                title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
             }, ],
@@ -86,6 +92,7 @@ router.post('/close/:id', authenticate, async (req, res) => {
         const persistedCashier = await cashier.save();
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Caixa fechado com sucesso',
             persistedCashier,
@@ -93,6 +100,7 @@ router.post('/close/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -117,6 +125,7 @@ router.post('/:cashierId/pay/:productId', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Valor pago com sucesso',
                 persistedCashier,
@@ -125,6 +134,7 @@ router.post('/:cashierId/pay/:productId', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,

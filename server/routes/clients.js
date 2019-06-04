@@ -12,6 +12,7 @@ router.get('/', authenticate, async (req, res) => {
         const clients = await Client.find({});
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Clientes listados com sucesso!',
             clients,
@@ -19,6 +20,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -35,6 +37,7 @@ router.post('/', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Cliente cadastrado com sucesso!',
                 persistedClient
@@ -42,6 +45,7 @@ router.post('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -56,6 +60,7 @@ router.post('/search', authenticate, async (req, res) => {
         const clients = await Client.find({ name: { "$regex": name, "$options": "i" } });
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Cliente encontrado com sucesso!',
             clients,
@@ -63,6 +68,7 @@ router.post('/search', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,

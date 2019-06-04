@@ -19,6 +19,7 @@ router.get('/', authenticate, async (req, res) => {
         const menus = await Menu.find({ _id: role.menus });
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Menus carregados com sucesso',
             menus,
@@ -26,6 +27,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,

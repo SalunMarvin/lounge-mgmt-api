@@ -14,6 +14,7 @@ router.get('/', authenticate, async (req, res) => {
         const products = await Product.find({}).populate('terminal');
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Produtos encontrados com sucesso!',
             products,
@@ -21,6 +22,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -34,6 +36,7 @@ router.get('/:id', authenticate, async (req, res) => {
         const product = await Product.findById(req.params.id);
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Produto encontrado com sucesso!',
             product,
@@ -41,6 +44,7 @@ router.get('/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -77,6 +81,7 @@ router.post('/', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Produto cadastrado com sucesso!',
                 persistedProduct
@@ -84,6 +89,7 @@ router.post('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -117,6 +123,7 @@ router.put('/:id', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Produto alterado com sucesso!',
                 persistedProduct
@@ -124,6 +131,7 @@ router.put('/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -140,6 +148,7 @@ router.delete('/:id', authenticate, async (req, res) => {
         });
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Produto excluído com sucesso!',
             products,
@@ -147,6 +156,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'Erro',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -185,6 +195,7 @@ router.post('/search', authenticate, async (req, res) => {
         }
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Produtos encontrados com sucesso!',
             products,
@@ -192,6 +203,7 @@ router.post('/search', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'Erro',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -234,6 +246,7 @@ router.post('/pay', authenticate, async (req, res) => {
         const persistedTicket = await ticket.save();
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Produto(s) pago(s) com sucesso (com baixa de estoque)!',
             persistedTicket,
@@ -242,6 +255,7 @@ router.post('/pay', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'Erro',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -277,6 +291,7 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
         const persistedCashier = await cashier.save();
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Venda realizada com sucesso (com baixa de estoque)!',
             persistedCashier,
@@ -285,6 +300,7 @@ router.post('/pay/cashier', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'Erro',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -315,6 +331,7 @@ router.post('/remove', authenticate, async (req, res) => {
         const persistedTicket = await ticket.save();
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Produto(s) removido(s) da comanda (sem baixa de estoque)!',
             persistedTicket,
@@ -323,6 +340,7 @@ router.post('/remove', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'Erro',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -355,6 +373,7 @@ router.post('/remove-from-stock', authenticate, async (req, res) => {
         const persistedTicket = await ticket.save();
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Baixa de estoque do(s) produto(s) concluída!',
             persistedTicket,
@@ -363,6 +382,7 @@ router.post('/remove-from-stock', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'Erro',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,

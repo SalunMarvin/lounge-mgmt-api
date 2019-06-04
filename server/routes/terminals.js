@@ -12,6 +12,7 @@ router.get('/', authenticate, async (req, res) => {
         const terminals = await Terminal.find({});
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Terminais encontrados com sucesso!',
             terminals,
@@ -19,6 +20,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -32,6 +34,7 @@ router.get('/:id', authenticate, async (req, res) => {
         const terminal = await Terminal.findById(req.params.id).populate('orders');
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Terminal encontrado com sucesso.',
             terminal,
@@ -39,6 +42,7 @@ router.get('/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,

@@ -12,6 +12,7 @@ router.get('/', authenticate, async (req, res) => {
         const orders = await Order.find({}).sort({'created': 1});
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Pedidos encontrados com sucesso!',
             orders,
@@ -19,6 +20,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -32,6 +34,7 @@ router.get('/terminal/:id', authenticate, async (req, res) => {
         const orders = await Order.find({ terminal: req.params.id, ready: false }).sort({'created': 1});
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Pedidos encontrados com sucesso!',
             orders,
@@ -39,6 +42,7 @@ router.get('/terminal/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -53,6 +57,7 @@ router.post('/', authenticate, async (req, res) => {
         const persistedOrder = await order.save();
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Pedido criado com sucesso!',
             persistedOrder,
@@ -60,6 +65,7 @@ router.post('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -78,6 +84,7 @@ router.post('/ready/:id', authenticate, async (req, res) => {
         io.emit('orderReady', order);
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Pedido pronto!',
             order,
@@ -85,6 +92,7 @@ router.post('/ready/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,

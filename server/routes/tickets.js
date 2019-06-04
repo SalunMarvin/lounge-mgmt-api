@@ -16,6 +16,7 @@ router.get('/', authenticate, async (req, res) => {
         }).populate('products').populate('client');
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Aqui estão suas comandas!',
             tickets,
@@ -23,6 +24,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -64,6 +66,7 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
         ticket.products = products
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Aqui está sua comanda!',
             ticket,
@@ -71,6 +74,7 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -88,6 +92,7 @@ router.get('/details/:uniqueNumber', authenticate, async (req, res) => {
         ticket.products.sort((a, b) => a.uniqueCode - b.uniqueCode)
 
         res.json({
+            type: 'success',
             title: 'OK',
             detail: 'Aqui está sua comanda!',
             ticket,
@@ -95,6 +100,7 @@ router.get('/details/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -112,6 +118,7 @@ router.post('/', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Comanda criada com sucesso!',
                 persistedTicket
@@ -119,6 +126,7 @@ router.post('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -140,6 +148,7 @@ router.post('/move/:uniqueNumber', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Comanda movida com sucesso!',
                 persistedTicket
@@ -147,6 +156,7 @@ router.post('/move/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -233,6 +243,7 @@ router.post('/product', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Produto adicionado com sucesso',
                 persistedTicket
@@ -240,6 +251,7 @@ router.post('/product', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -273,12 +285,14 @@ router.post('/client', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Cliente adicionado com sucesso',
             });
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -302,6 +316,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'OK',
                 detail: 'Valor pago com sucesso',
                 persistedTicket
@@ -309,6 +324,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Não foi possível pagar este valor.',
                 errorMessage: err.message,
@@ -349,6 +365,7 @@ router.post('/close/:id', authenticate, async (req, res) => {
         res
             .status(201)
             .json({
+                type: 'success',
                 title: 'Sucesso',
                 detail: 'Comanda fechada com sucesso',
             });
@@ -356,6 +373,7 @@ router.post('/close/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Não foi possível adicionar uma nova mesa ou cliente.',
                 errorMessage: err.message,

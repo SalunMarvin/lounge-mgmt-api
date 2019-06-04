@@ -12,6 +12,7 @@ router.get('/', authenticate, async (req, res) => {
         const roles = await Role.find({});
 
         res.json({
+            type: false,
             title: 'OK',
             detail: 'Perfis encontrados com sucesso!',
             roles,
@@ -19,6 +20,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
+                type: 'alert',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
