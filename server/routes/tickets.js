@@ -24,7 +24,7 @@ router.get('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -74,7 +74,7 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -100,7 +100,7 @@ router.get('/details/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(401).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -126,7 +126,7 @@ router.post('/', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -156,7 +156,7 @@ router.post('/move/:uniqueNumber', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -251,7 +251,7 @@ router.post('/product', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -292,7 +292,7 @@ router.post('/client', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Erro inesperado. Contate o administrador do sistema.',
                 errorMessage: err.message,
@@ -324,7 +324,7 @@ router.post('/pay/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Não foi possível pagar este valor.',
                 errorMessage: err.message,
@@ -373,7 +373,7 @@ router.post('/close/:id', authenticate, async (req, res) => {
     } catch (err) {
         res.status(400).json({
             errors: [{
-                type: 'alert',
+                type: 'error',
                 title: 'ERRO',
                 detail: 'Não foi possível adicionar uma nova mesa ou cliente.',
                 errorMessage: err.message,

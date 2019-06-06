@@ -41,6 +41,7 @@ router.post('/register', async (req, res) => {
     res.status(400).json({
       errors: [
         {
+          type: 'error',
           title: 'Registration Error',
           detail: 'Something went wrong during registration process.',
           errorMessage: err.message,
@@ -57,6 +58,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({
         errors: [
           {
+            type: 'error',
             title: 'ERRO',
             detail: 'O email deve ser válido',
           },
@@ -67,6 +69,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({
         errors: [
           {
+            type: 'error',
             title: 'ERRO',
             detail: 'A senha deve ser um texto',
           },
@@ -105,6 +108,7 @@ router.post('/login', async (req, res) => {
     res.status(401).json({
       errors: [
         {
+          type: 'error',
           title: 'ERRO',
           detail: 'Verifique se o email e a senha estão corretos!',
           errorMessage: err.message,
@@ -128,6 +132,7 @@ router.get('/me', authenticate, async (req, res) => {
     res.status(401).json({
       errors: [
         {
+          type: 'error',
           title: 'Unauthorized',
           detail: 'Not authorized to access this route',
           errorMessage: err.message,
@@ -155,6 +160,7 @@ router.put('/update', authenticate, async (req, res) => {
     res.status(401).json({
       errors: [
         {
+          type: 'error',
           title: 'Unauthorized',
           detail: 'Not authorized to access this route',
           errorMessage: err.message,
@@ -189,6 +195,7 @@ router.delete('/me', authenticate, csrfCheck, async (req, res) => {
     res.status(401).json({
       errors: [
         {
+          type: 'error',
           title: 'Invalid Credentials',
           detail: 'Check email and password combination',
           errorMessage: err.message,
@@ -212,6 +219,7 @@ router.put('/logout', authenticate, async (req, res) => {
     res.status(400).json({
       errors: [
         {
+          type: 'error',
           title: 'ERRO',
           detail: 'Não foi possível realizar o logout!',
           errorMessage: err.message,
