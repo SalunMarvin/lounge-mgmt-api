@@ -15,7 +15,7 @@ router.get('/', authenticate, async (req, res) => {
         const cashiers = await Cashier.find({}).sort({'openDate': -1});
 
         res.json({
-            type: 'success',
+            type: false,
             title: 'OK',
             detail: 'Caixas encontrados com sucesso!',
             cashiers,

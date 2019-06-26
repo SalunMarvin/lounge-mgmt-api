@@ -16,7 +16,7 @@ router.get('/', authenticate, async (req, res) => {
         }).populate('products').populate('client');
 
         res.json({
-            type: 'success',
+            type: false,
             title: 'OK',
             detail: 'Aqui estão suas comandas!',
             tickets,
@@ -66,7 +66,7 @@ router.get('/:uniqueNumber', authenticate, async (req, res) => {
         ticket.products = products
 
         res.json({
-            type: 'success',
+            type: false,
             title: 'OK',
             detail: 'Aqui está sua comanda!',
             ticket,
@@ -92,7 +92,7 @@ router.get('/details/:uniqueNumber', authenticate, async (req, res) => {
         ticket.products.sort((a, b) => a.uniqueCode - b.uniqueCode)
 
         res.json({
-            type: 'success',
+            type: false,
             title: 'OK',
             detail: 'Aqui está sua comanda!',
             ticket,
