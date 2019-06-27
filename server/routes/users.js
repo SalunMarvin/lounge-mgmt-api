@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
     if (typeof password !== 'string') {
       throw new Error('A senha deve ser do tipo texto.');
     }
-    const user = new User({ email, password });
+    const user = new User({ email, password, uniqueNumber });
     const persistedUser = await user.save();
     const userId = persistedUser._id;
 
