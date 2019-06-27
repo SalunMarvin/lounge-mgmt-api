@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, uniqueNumber } = req.body;
     if (!isEmail(email)) {
       throw new Error('O email deve ser válido.');
     }
