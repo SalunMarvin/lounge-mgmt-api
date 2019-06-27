@@ -36,7 +36,9 @@ app.use(function (req, res, next) {
     'http://127.0.0.1:8080',
     'http://localhost:8080',
     'https://kanova.netlify.com',
-    'https://kanovabeer.netlify.com'];
+    'https://kanovabeer.netlify.com',
+    'https://beerball.netlify.com',
+  ];
   let origin = req.headers.origin;
   if(allowedOrigins.indexOf(origin) > -1){
        res.setHeader('Access-Control-Allow-Origin', origin);
