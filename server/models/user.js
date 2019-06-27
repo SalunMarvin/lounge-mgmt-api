@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         required: false,
         trim: true,
-        unique: true,
+        unique: false,
     },
     birthDate: {
         type: Date,
