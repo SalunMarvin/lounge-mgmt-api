@@ -165,7 +165,7 @@ router.post('/move/:uniqueNumber', authenticate, async (req, res) => {
     }
 });
 
-router.post('/product', authenticate, async (req, res) => {
+router.post('/product', async (req, res) => {
     try {
         const {
             criteria,
