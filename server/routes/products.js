@@ -165,7 +165,7 @@ router.delete('/:id', authenticate, async (req, res) => {
     }
 });
 
-router.post('/search', authenticate, async (req, res) => {
+router.post('/search', async (req, res) => {
     try {
         let products = [];
         const {
