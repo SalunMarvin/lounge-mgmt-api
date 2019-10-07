@@ -33,7 +33,7 @@ router.get('/', authenticate, async (req, res) => {
     }
 });
 
-router.get('/:uniqueNumber', authenticate, async (req, res) => {
+router.get('/:uniqueNumber', async (req, res) => {
     try {
         let ticket = await Ticket.findOne({
             uniqueNumber: req.params.uniqueNumber
